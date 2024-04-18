@@ -86,7 +86,7 @@
                 android:layout_gravity="center_vertical"/>
 
             <EditText
-                android:id="@+id/num1"
+                android:id="@+id/num4"
                 android:layout_width="50dp"
                 android:layout_height="65dp"
                 android:background="@drawable/reset_edittext_box"
@@ -99,7 +99,7 @@
                 android:layout_gravity="center_horizontal"/>
 
             <EditText
-                android:id="@+id/num2"
+                android:id="@+id/num5"
                 android:layout_width="50dp"
                 android:layout_height="65dp"
                 android:background="@drawable/reset_edittext_box"
@@ -112,7 +112,7 @@
                 android:layout_gravity="center_horizontal"/>
 
             <EditText
-                android:id="@+id/num3"
+                android:id="@+id/num6"
                 android:layout_width="50dp"
                 android:layout_height="65dp"
                 android:background="@drawable/reset_edittext_box"
