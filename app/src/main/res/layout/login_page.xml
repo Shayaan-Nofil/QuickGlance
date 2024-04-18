@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#161A25"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Login_Activity">
+
+
+  <de.hdodenhof.circleimageview.CircleImageView
+      android:layout_width="150dp"
+      android:layout_height="150dp"
+      android:layout_marginTop="-62dp"
+      android:src="#2F315A" />
+
+  <de.hdodenhof.circleimageview.CircleImageView
+      android:layout_width="150dp"
+      android:layout_height="150dp"
+      android:layout_marginStart="-70dp"
+      android:src="#4C4E7B" />
+
+
+  <RelativeLayout
+      android:id="@+id/header"
+      android:layout_width="match_parent"
+      android:layout_height="280dp">
+
+    <ImageView
+        android:id="@+id/myImageView"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"/>
+
+
+  </RelativeLayout>
+
+
+  <RelativeLayout
+      android:id="@+id/login_bar"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@id/header"
+      android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/Email"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="90dp"
+        android:background="@drawable/white_box_top_curve"
+        android:hint="   Username"
+        android:drawableStart="@drawable/person_icon_grey"
+        android:textColorHint="#918B8B"
+        android:textStyle="bold"
+        android:paddingStart="20dp"
+        android:textSize="20sp"
+        android:inputType="text"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#FFFFFF" />
+
+    <EditText
+        android:layout_marginTop="2dp"
+        android:layout_below="@id/Email"
+        android:id="@+id/Password"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginRight="90dp"
+        android:background="@drawable/white_box_bottom_curve"
+        android:hint="   Password"
+        android:drawableLeft="@drawable/lock_icon_grey"
+        android:textColorHint="#918B8B"
+        android:textStyle="bold"
+        android:paddingLeft="20dp"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        android:inputType="textPassword"
+        android:backgroundTint="#FFFFFF" />
+
+    <RelativeLayout
+    android:layout_width="90dp"
+    android:layout_height="90dp"
+    android:layout_alignRight="@+id/Email"
+    android:layout_marginRight="-40dp"
+    android:layout_marginTop="40dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="#32367E" />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/fire_icon_white" />
+</RelativeLayout>
+
+    <TextView
+        android:id="@+id/forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Password"
+        android:layout_marginTop="10dp"
+      android:text="Forgot your Password ?"
+      android:textSize="15sp"
+      android:textColor="@color/white"
+      android:textStyle="bold"
+      android:layout_alignRight="@+id/Password"
+        android:layout_marginRight="-20dp"/>
+
+    <Button
+        android:layout_below="@+id/forgot_password"
+        android:layout_marginTop="50dp"
+        android:id="@+id/login_button"
+        android:layout_width="200dp"
+        android:layout_height="80dp"
+        android:background="@drawable/purple_box_right_curve"
+        android:text="Register"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+
+
+
+
+
+  </RelativeLayout>
+</RelativeLayout>
+
+
