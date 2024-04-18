@@ -13,6 +13,15 @@
         android:theme="@style/Theme.QuickGlance"
         tools:targetApi="31">
         <activity
+            android:name=".OTP_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".reset_password_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".reset_password_number_activity"
+            android:exported="false" />
+        <activity
             android:name=".Add_friends_activity"
             android:exported="false" />
         <activity
