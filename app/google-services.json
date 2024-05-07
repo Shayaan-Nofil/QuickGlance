@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "802616534836",
+    "firebase_url": "https://quickglance-7a0ce-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "quickglance-7a0ce",
+    "storage_bucket": "quickglance-7a0ce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802616534836:android:57f81873849010ab552761",
+        "android_client_info": {
+          "package_name": "com.m_abdullah.quickglance"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtf9opbyLlwKfqkeHutY5y7RGVXIkyIOU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
