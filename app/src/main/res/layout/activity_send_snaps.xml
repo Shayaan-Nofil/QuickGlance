@@ -6,19 +6,15 @@
     tools:context=".Camera_Activity"
     android:background="@color/black">
 
-    <RelativeLayout
+    <ImageView
+        android:id="@+id/image_viewer"
         android:layout_marginTop="60dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#9D9C9C"
+        android:background="#000000"
         android:layout_marginBottom="80dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Camera view"
-            android:layout_centerInParent="true"/>
-    </RelativeLayout>
+    </ImageView>
 
     <LinearLayout
         android:id="@+id/header_layout"

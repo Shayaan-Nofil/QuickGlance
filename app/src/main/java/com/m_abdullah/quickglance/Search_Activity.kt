@@ -3,9 +3,9 @@ package com.m_abdullah.quickglance
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class MainActivity : AppCompatActivity() {
+class Search_Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.splash_page)
+        setContentView(R.layout.activity_search)
     }
 }

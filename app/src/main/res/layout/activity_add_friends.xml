@@ -21,7 +21,7 @@
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/profile_button"
+                android:id="@+id/back_button"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_width="30dp"
@@ -59,16 +59,20 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/grey_text_box"
-            android:hint="Search Friends"
+            android:hint="Search Users"
             android:textColor="@color/black"
             android:paddingStart="40dp">
         </EditText>
 
-        <ImageView
-            android:layout_margin="10dp"
+        <Button
+            android:id="@+id/search_button"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/search_grey"/>
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/search_grey" />
 
     </RelativeLayout>
 
@@ -80,70 +84,10 @@
         android:orientation="vertical"
         android:layout_marginTop="10dp">
 
-        <LinearLayout
-            android:id="@+id/contacts_recycle"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/addusers_recycle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/chatspage_seperator_box"
-            android:paddingBottom="5dp">
-
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginStart="10dp"
-                android:src="@drawable/bruce_pic"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginStart="10dp"
-                android:layout_gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Bruce"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"/>
-
-                <TextView
-                    android:id="@+id/person_username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Brice.am"
-                    android:textSize="11sp"
-                    android:textColor="@color/black"/>
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="150dp">
-
-                <Button
-                    android:id="@+id/add_button"
-                    android:layout_width="80dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/add_friend_button"
-                    android:layout_centerVertical="true"/>
-
-                <Button
-                    android:id="@+id/cross_button"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:background="@drawable/cross_grey"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="20dp"/>
-
-
-            </RelativeLayout>
-
-        </LinearLayout>
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
 

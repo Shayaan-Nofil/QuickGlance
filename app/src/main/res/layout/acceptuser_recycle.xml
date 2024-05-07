@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contacts_recycle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/chatspage_seperator_box">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/person_img"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/bruce_pic"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="10dp"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/person_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bruce"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/person_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Brice.am"
+            android:textSize="11sp"
+            android:textColor="@color/black"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/add_button"
+            android:layout_width="90dp"
+            android:layout_height="30dp"
+            android:background="@drawable/add_friend_button"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/reject_button"
+            android:layout_marginEnd="15dp"/>
+
+        <Button
+            android:id="@+id/reject_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/cross_grey"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:scaleX="0.5"
+            android:scaleY="0.5"/>
+
+
+    </RelativeLayout>
+
+</LinearLayout>
+

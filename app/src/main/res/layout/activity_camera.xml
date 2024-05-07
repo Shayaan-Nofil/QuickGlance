@@ -6,21 +6,17 @@
     tools:context=".Camera_Activity"
     android:background="@color/black">
 
-    <RelativeLayout
+    <androidx.camera.view.PreviewView
+        android:id="@+id/camera_preview"
         android:layout_marginTop="60dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#9D9C9C"
         android:layout_marginBottom="80dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Camera view"
-            android:layout_centerInParent="true"/>
-    </RelativeLayout>
+    </androidx.camera.view.PreviewView>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,6 +25,7 @@
 
         <Button
             android:id="@+id/profile_button"
+            android:layout_alignParentStart="true"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:background="@drawable/profile"/>
@@ -38,26 +35,29 @@
             android:layout_marginStart="20dp"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@drawable/search"/>
+            android:background="@drawable/search"
+            android:layout_toRightOf="@id/profile_button"/>
 
         <Button
             android:id="@+id/addfriend_button"
-            android:layout_marginStart="200dp"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@drawable/add_friend"/>
+            android:background="@drawable/add_friend"
+            android:layout_toStartOf="@id/vertical_buttons"/>
 
         <LinearLayout
+            android:id="@+id/vertical_buttons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_alignParentEnd="true"
             android:layout_marginStart="20dp">
 
             <Button
                 android:id="@+id/flipcamera_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/search"/>
+                android:background="@drawable/flip_camera"/>
 
             <Button
                 android:id="@+id/flash_button"
@@ -65,10 +65,10 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_width="20dp"
                 android:layout_height="30dp"
-                android:background="@drawable/flash"/>
+                android:background="@drawable/flash_off"/>
 
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/control_dock"

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contacts_recycle"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:orientation="horizontal"
+    android:background="@drawable/chatspage_seperator_box">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_img"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="10dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/bruce_pic"/>
+
+    <LinearLayout
+        android:layout_toEndOf="@id/user_img"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="10dp"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bruce"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="#061F4D"/>
+
+        <LinearLayout
+            android:layout_marginTop="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/snap_notif_pic"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/cyan_rectangle"/>
+            <TextView
+                android:id="@+id/Snap_notif"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:text="New Glance"
+                android:textSize="11sp"
+                android:textColor="#15e5eb"/>
+            <ImageView
+                android:layout_gravity="center_vertical"
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:src="@drawable/grey_dot"/>
+            <TextView
+                android:id="@+id/timeago"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:text="1m"
+                android:textSize="11sp"/>
+            <ImageView
+                android:layout_gravity="center_vertical"
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:src="@drawable/grey_dot"/>
+            <TextView
+                android:id="@+id/streak_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:text="452"
+                android:textSize="11sp"
+                android:textColor="@color/black"/>
+            <ImageView
+                android:id="@+id/star"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/star"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_toStartOf="@id/message_button"
+        android:layout_marginEnd="4dp"
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/vertical_seperator"/>
+
+    <Button
+        android:id="@+id/message_button"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:scaleX="0.4"
+        android:scaleY="0.5"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/message_box"/>
+
+</RelativeLayout>
+
