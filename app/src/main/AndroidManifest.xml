@@ -27,9 +27,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/quickglance_logo"
+        android:icon="@drawable/quickglance_icon"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/quickglance_logo"
+        android:roundIcon="@drawable/quickglance_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.QuickGlance"
         tools:targetApi="31">

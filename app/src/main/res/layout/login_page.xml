@@ -20,17 +20,28 @@
       android:src="#4C4E7B" />
 
 
+
   <RelativeLayout
       android:id="@+id/header"
       android:layout_width="match_parent"
       android:layout_height="280dp">
 
-    <ImageView
-        android:id="@+id/myImageView"
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"/>
+      <ImageView
+          android:layout_width="80dp"
+          android:layout_height="90dp"
+          android:layout_marginBottom="60dp"
+          android:layout_gravity="center"
+          android:background="@drawable/skull"
+          android:layout_alignParentBottom="true"
+          android:layout_centerHorizontal="true"/>
+
+        <ImageView
+            android:id="@+id/myImageView"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"/>
+
 
 
   </RelativeLayout>
@@ -92,11 +103,16 @@
         android:layout_height="match_parent"
         android:src="#32367E" />
 
-      <ImageView
-          android:layout_width="40dp"
-          android:layout_height="40dp"
-          android:layout_centerInParent="true"
-          android:src="@drawable/fire_icon_white" />
+        <TextView
+            android:id="@+id/signup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Sign Up"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
 </RelativeLayout>
 
     <TextView
@@ -124,19 +140,6 @@
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/signup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp"
-        android:text="Sign Up"
-        android:textSize="15sp"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:layout_marginRight="-20dp"/>
 
   </RelativeLayout>
 </RelativeLayout>

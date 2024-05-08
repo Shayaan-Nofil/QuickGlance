@@ -41,6 +41,7 @@ class Registration_Activity : AppCompatActivity() {
         val loginbutton=findViewById<View>(R.id.LogIn)
         loginbutton.setOnClickListener(View.OnClickListener {
             val login = Intent(this, Login_Activity::class.java )
+            login.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(login)
             finish()
         })

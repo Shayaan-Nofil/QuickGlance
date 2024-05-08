@@ -8,5 +8,5 @@ class User: Serializable {
     var number: String = ""
     var birthday: String = ""
     var token: String = ""
-    var profilepic: String = "https://firebasestorage.googleapis.com/v0/b/quickglance-7a0ce.appspot.com/o/profilepics%2Fali_profilepic.png?alt=media&token=a8adde1c-5170-429f-9f64-6af92e125438"
+    var profilepic: String = "https://firebasestorage.googleapis.com/v0/b/quickglance-7a0ce.appspot.com/o/default_profile.png?alt=media&token=fd19ac57-4d23-46ca-8af7-a7dbc7665155"
 }

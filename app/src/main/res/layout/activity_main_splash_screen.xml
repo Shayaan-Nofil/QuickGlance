@@ -7,17 +7,12 @@
     android:layout_height="match_parent"
     tools:context=".main_splash_screen">
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="263dp"
+        android:layout_height="wrap_content"
+        android:scaleY="0.7"
         android:layout_gravity="center"
-        android:layout_margin="20dp"
         android:background="@drawable/logo"
-        android:gravity="center"
-        android:textColor="#FFFFFF"
-        android:textSize="34sp"
-        android:textStyle="bold"
-
-        />
+        android:gravity="center" />
 
 </LinearLayout>

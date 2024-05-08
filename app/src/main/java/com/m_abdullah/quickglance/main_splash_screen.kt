@@ -77,14 +77,12 @@ class main_splash_screen : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.Main).launch {
             // Delay for 5 seconds
-            delay(250)
-
+            delay(300)
             // Open the new activity here
             val intent = Intent(this@main_splash_screen, Login_Activity::class.java)
             startActivity(intent)
             overridePendingTransition(0,R.anim.static_display_long)
 
-            // Finish the current activity if needed
             finish()
         }
 
