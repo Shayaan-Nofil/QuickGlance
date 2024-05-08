@@ -1,22 +1,44 @@
 package com.m_abdullah.quickglance
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.Handler
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.provider.MediaStore
 import android.util.Log
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewConfiguration
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.video.MediaStoreOutputOptions
+import androidx.camera.video.Quality
+import androidx.camera.video.QualitySelector
+import androidx.camera.video.Recorder
+import androidx.camera.video.Recording
+import androidx.camera.video.VideoCapture
+import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
 import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
@@ -28,6 +50,16 @@ class Camera_Activity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
     private var usingFrontCamera = false
     private var flashMode = ImageCapture.FLASH_MODE_OFF
+    private var videoCapture: VideoCapture<Recorder>? = null
+    private var recording: Recording? = null
+    private var isrec: Boolean = false
+    private lateinit var cameraProvider: ProcessCameraProvider // Add this line
+    private lateinit var cameraSelector: CameraSelector // Add this line
+    private lateinit var preview: Preview // Add this line
+    private var timer: CountDownTimer? = null
+    private var secondsElapsed: Int = 0
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
@@ -36,13 +68,15 @@ class Camera_Activity : AppCompatActivity() {
             val sharedPref = getSharedPreferences("CameraPrefs", MODE_PRIVATE)
             usingFrontCamera = sharedPref.getBoolean("usingFrontCamera", false)
 
-            val cameraSelector = if (usingFrontCamera) CameraSelector.DEFAULT_FRONT_CAMERA else CameraSelector.DEFAULT_BACK_CAMERA
+            cameraSelector = if (usingFrontCamera) CameraSelector.DEFAULT_FRONT_CAMERA else CameraSelector.DEFAULT_BACK_CAMERA
             startCamera(cameraSelector)
         } else {
             ActivityCompat.requestPermissions(
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
         }
+        val videoduration: TextView = findViewById(R.id.video_duration)
+        videoduration.visibility = View.GONE
 
         // Set up the listener for take photo button
         val cameraCaptureButton: Button = findViewById(R.id.shutter_button)
@@ -50,19 +84,41 @@ class Camera_Activity : AppCompatActivity() {
             takePhoto()
         }
 
+        val handler = Handler()
+        val longPressRunnable = Runnable {
+            if (!isrec) {
+                isrec = true
+                startRecording()
+                cameraCaptureButton.setBackgroundResource(R.drawable.recording_icon_red)
+                cameraCaptureButton.scaleX = 1.3F
+                cameraCaptureButton.scaleY = 1.3F
+            }
+        }
+
+        cameraCaptureButton.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    handler.postDelayed(longPressRunnable, ViewConfiguration.getLongPressTimeout().toLong())
+                }
+                MotionEvent.ACTION_UP -> {
+                    handler.removeCallbacks(longPressRunnable)
+                    if (isrec) {
+                        isrec = false
+                        stopRecording()
+                        cameraCaptureButton.setBackgroundResource(R.drawable.shutter)
+                        cameraCaptureButton.scaleX = 1.0F
+                        cameraCaptureButton.scaleY = 1.0F
+                    } else {
+                        takePhoto()
+                    }
+                }
+            }
+            true
+        }
+
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-//        var videobutton: Button = findViewById(androidx.camera.core.R.id.video_button)
-//        videobutton.setOnClickListener{
-//            val intent = Intent(this, camera_video_mode::class.java)
-//            val bundle = Bundle()
-//            bundle.putSerializable("chatdata", chat)
-//            intent.putExtras(bundle)
-//            intent.putExtra("chatdata", chat)
-//            startActivity(intent)
-//            finish()
-//        }
 
         findViewById<Button>(R.id.flipcamera_button).setOnClickListener(){
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
@@ -84,12 +140,16 @@ class Camera_Activity : AppCompatActivity() {
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
             vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
 
+            val cameraControl = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture, videoCapture).cameraControl
+
             if (flashMode == ImageCapture.FLASH_MODE_OFF && !usingFrontCamera) {
                 flashMode = ImageCapture.FLASH_MODE_ON
                 flashbutton.setBackgroundResource(R.drawable.flash)
+                cameraControl.enableTorch(true)
             } else {
                 flashMode = ImageCapture.FLASH_MODE_OFF
                 flashbutton.setBackgroundResource(R.drawable.flash_off)
+                cameraControl.enableTorch(false)
             }
 
             imageCapture?.flashMode = flashMode
@@ -141,18 +201,25 @@ class Camera_Activity : AppCompatActivity() {
 
         cameraProviderFuture.addListener({
             // Used to bind the lifecycle of cameras to the lifecycle owner
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+            cameraProvider = cameraProviderFuture.get()
 
             // Preview
-            val preview = Preview.Builder()
+            preview = Preview.Builder()
                 .build()
                 .also {
                     it.setSurfaceProvider(findViewById<PreviewView>(R.id.camera_preview).surfaceProvider)
                 }
 
+            // Initialize ImageCapture use case
             imageCapture = ImageCapture.Builder()
                 .setTargetAspectRatio(AspectRatio.RATIO_16_9) // Set aspect ratio to 9:16
                 .build()
+
+            // Initialize VideoCapture use case
+            val recorder = Recorder.Builder()
+                .setQualitySelector(QualitySelector.from(Quality.HIGHEST))
+                .build()
+            videoCapture = VideoCapture.withOutput(recorder)
 
             try {
                 // Unbind use cases before rebinding
@@ -160,7 +227,7 @@ class Camera_Activity : AppCompatActivity() {
 
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture
+                    this, cameraSelector, preview, imageCapture, videoCapture
                 )
 
             } catch (exc: Exception) {
@@ -194,9 +261,17 @@ class Camera_Activity : AppCompatActivity() {
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(photoFile)
-                    val msg = "Photo capture succeeded: $savedUri"
-                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, msg)
+
+                    // Flip the image if using the front camera
+//                    if (usingFrontCamera) {
+//                        val bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
+//                        val matrix = Matrix()
+//                        matrix.preScale(-1.0f, 1.0f)
+//                        val flippedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+//                        val out = FileOutputStream(photoFile)
+//                        flippedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+//                        out.close()
+//                    }
 
                     // Upload the image to Firestore
                     val intent = Intent(this@Camera_Activity, Send_snaps::class.java)
@@ -207,44 +282,97 @@ class Camera_Activity : AppCompatActivity() {
             })
     }
 
-//    private fun uploadImageToFirestore(uri: Uri) {
-//        Thread(Runnable {
-//            var message = Messages()
-//            var mAuth = Firebase.auth
-//            message.senderid = mAuth.uid.toString()
-//            message.time = Calendar.getInstance().time.toString()
-//            message.tag = "image"
-//
-//            val storageref = FirebaseStorage.getInstance().reference
-//
-//            storageref.child("Chats").child(chat!!.id + Random.nextInt(0,100000).toString()).putFile(uri).addOnSuccessListener {
-//                it.metadata!!.reference!!.downloadUrl.addOnSuccessListener {task ->
-//                    message.content = task.toString()
-//
-//                    FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).addListenerForSingleValueEvent(object:
-//                        ValueEventListener {
-//                        override fun onDataChange(snapshot: DataSnapshot) {
-//                            if (snapshot.exists()) {
-//                                val user = snapshot.getValue(User::class.java)
-//                                if (user != null) {
-//                                    message.senderpic = user.profilepic
-//
-//                                    message.id = FirebaseDatabase.getInstance().getReference("Chats").child(chat!!.id).child("Messages").push().key.toString()
-//                                    FirebaseDatabase.getInstance().getReference("Chats").child(chat!!.id).child("Messages").child(message.id).setValue(message)
-//                                    finish()
-//                                }
-//                            }
-//                        }
-//                        override fun onCancelled(error: DatabaseError) {}
-//                    })
-//                }
-//            }.addOnFailureListener{
-//                Log.w("TAG", "Upload failed")
-//            }
-//        }).start()
-//
-//        finish()
-//    }
+    private fun startRecording() {
+        val videoCapture = this.videoCapture ?: return
+
+        isrec = true
+        secondsElapsed = 0
+        timer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                secondsElapsed++
+                val minutes = secondsElapsed / 60
+                val seconds = secondsElapsed % 60
+                val videoduration: TextView = findViewById(R.id.video_duration)
+                videoduration.text = String.format("%02d:%02d", minutes, seconds)
+                videoduration.visibility = View.VISIBLE
+            }
+
+            override fun onFinish() {}
+        }.start()
+
+
+        val curRecording = recording
+        if (curRecording != null) {
+            curRecording.stop()
+            recording = null
+            return
+        }
+
+        val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
+            .format(System.currentTimeMillis())
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+            put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/CameraX-Video")
+            }
+        }
+
+        val mediaStoreOutputOptions = MediaStoreOutputOptions
+            .Builder(contentResolver, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
+            .setContentValues(contentValues)
+            .build()
+        recording = videoCapture.output
+            .prepareRecording(this, mediaStoreOutputOptions)
+            .apply {
+                if (PermissionChecker.checkSelfPermission(this@Camera_Activity,
+                        Manifest.permission.RECORD_AUDIO) ==
+                    PermissionChecker.PERMISSION_GRANTED)
+                {
+                    withAudioEnabled()
+                }
+            }
+            .start(ContextCompat.getMainExecutor(this)) { recordEvent ->
+                when(recordEvent) {
+                    is VideoRecordEvent.Start -> {
+                    }
+                    is VideoRecordEvent.Finalize -> {
+                        if (!recordEvent.hasError()) {
+                            val msg = "Video capture succeeded: " +
+                                    "${recordEvent.outputResults.outputUri}"
+
+                            val intent = Intent(this@Camera_Activity, Send_snaps::class.java)
+                            Log.w("TAG", recordEvent.outputResults.outputUri.toString())
+                            intent.putExtra("videoUri", recordEvent.outputResults.outputUri.toString())
+                            startActivity(intent)
+
+                            // Call uploadVideoToFirestore function here
+                            //uploadVideoToFirestore(recordEvent.outputResults.outputUri)
+
+                        } else {
+                            recording?.close()
+                            recording = null
+                            Log.e(TAG, "Video capture ends with error: " +
+                                    "${recordEvent.error}")
+                        }
+                    }
+                }
+            }
+    }
+
+    private fun stopRecording() {
+        val curRecording = recording
+        if (curRecording != null) {
+            curRecording.stop()
+            recording = null
+            isrec = false
+        }
+
+        // Stop timer
+        timer?.cancel()
+        val videoduration: TextView = findViewById(R.id.video_duration)
+        videoduration.visibility = View.GONE
+    }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
@@ -262,6 +390,17 @@ class Camera_Activity : AppCompatActivity() {
         super.onDestroy()
         cameraExecutor.shutdown()
     }
+
+    override fun onPause() {
+        super.onPause()
+        cameraExecutor.shutdown()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startCamera(cameraSelector)
+    }
+
     companion object {
         private const val TAG = "camera_picture_mode"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"

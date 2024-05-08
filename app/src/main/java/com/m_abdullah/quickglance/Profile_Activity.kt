@@ -26,7 +26,6 @@ import de.hdodenhof.circleimageview.CircleImageView
 import kotlin.random.Random
 
 private lateinit var storage: FirebaseStorage
-private lateinit var database: DatabaseReference
 private lateinit var mAuth: FirebaseAuth
 class Profile_Activity : AppCompatActivity() {
     private var usr = User()
@@ -111,7 +110,7 @@ class Profile_Activity : AppCompatActivity() {
                     usr.profilepic = task.toString()
                     Log.w("TAG", "Upload Success")
 
-                    FirebaseDatabase.getInstance().getReference("User").child(userId).setValue(usr).addOnSuccessListener {
+                    FirebaseDatabase.getInstance().getReference("User").child(userId).child("profilepic").setValue(usr.profilepic).addOnSuccessListener {
                         Log.w("TAG", "Upload Success")
                     }
                 }

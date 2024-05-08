@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#2b2e70"/> <!-- You can change the color code to the shade of purple you want -->
+    <corners android:radius="10dp"/> <!-- You can adjust the radius to change how rounded the corners are -->
+</shape>

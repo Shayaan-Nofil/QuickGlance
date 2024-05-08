@@ -42,9 +42,9 @@
                 android:id="@+id/snap_notif_pic"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:src="@drawable/cyan_rectangle"/>
+                android:src="@drawable/cyan_rectangle_chats"/>
             <TextView
-                android:id="@+id/Snap_notif"
+                android:id="@+id/snap_notif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="5dp"

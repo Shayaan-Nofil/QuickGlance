@@ -21,6 +21,15 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import org.json.JSONObject
+import java.io.IOException
 import java.util.Locale
 
 private lateinit var mAuth: FirebaseAuth
@@ -120,7 +129,13 @@ class Add_friends_activity : AppCompatActivity() {
                             database = FirebaseDatabase.getInstance().getReference("Requests")
                             database.child(req.id).setValue(req).addOnCompleteListener {
                                 Log.w("TAG", "Friend request sent")
-                                //sendNotiftoRecepients(req)
+
+                                FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).get().addOnSuccessListener {
+                                    val usr = it.getValue(User::class.java)
+                                    if (usr != null){
+                                        sendPushNotification(model.token, "New Friend Request from " + usr.username, "", "", mapOf("requestid" to req.id))
+                                    }
+                                }
                             }.addOnFailureListener{
                                 Log.w("TAG", "Friend request not sent")
                             }
@@ -138,5 +153,50 @@ class Add_friends_activity : AppCompatActivity() {
         super.onBackPressed()
         finish()
         overridePendingTransition(0, R.anim.slide_out_top)
+    }
+
+    fun sendPushNotification(token: String, title: String, subtitle: String, body: String, data: Map<String, String> = emptyMap()) {
+        val url = "https://fcm.googleapis.com/fcm/send"
+        val bodyJson = JSONObject()
+        bodyJson.put("to", token)
+        bodyJson.put("notification",
+            JSONObject().also {
+                it.put("title", title)
+                it.put("subtitle", subtitle)
+                it.put("body", body)
+                it.put("sound", "social_notification_sound.wav")
+            }
+        )
+        Log.d("TAG", "sendPushNotification: ${JSONObject(data)}")
+        if (data.isNotEmpty()) {
+            bodyJson.put("data", JSONObject(data))
+        }
+
+        var key="AAAAut-sZzQ:APA91bHEEIvHTZXQOqdhNiOQ114xLW02FAh_c_aBw-G46e2AWBPjkrEnYIpTA9r3yGAzi4vkQdGwJj8sYG4Bu08ibbd-xkkz99xQvm4qd44OkX-EbYxFPv41ndnhESiA92XJ_ytKWftn"
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("Content-Type", "application/json")
+            .addHeader("Authorization", "key=$key")
+            .post(
+                bodyJson.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
+            )
+            .build()
+
+        val client = OkHttpClient()
+
+        client.newCall(request).enqueue(
+            object : Callback {
+                override fun onResponse(call: Call, response: Response) {
+                    println("Received data: ${response.body?.string()}")
+                    Log.d("TAG", "onResponse: ${response}   ")
+                    Log.d("TAG", "onResponse Message: ${response.message}   ")
+                }
+
+                override fun onFailure(call: Call, e: IOException) {
+                    println(e.message.toString())
+                    Log.d("TAG", "onFailure: ${e.message.toString()}")
+                }
+            }
+        )
     }
 }

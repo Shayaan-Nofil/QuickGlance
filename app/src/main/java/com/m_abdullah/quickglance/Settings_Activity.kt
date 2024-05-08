@@ -133,5 +133,16 @@ class Settings_Activity : AppCompatActivity() {
                 finish()
             }
         }
+
+        findViewById<Button>(R.id.sign_out_button).setOnClickListener(){
+            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+
+            FirebaseAuth.getInstance().signOut()
+            val intent = Intent(this, Login_Activity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
+            finish()
+        }
     }
 }

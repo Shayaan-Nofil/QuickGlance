@@ -105,8 +105,7 @@ class Registration_Activity : AppCompatActivity() {
                                                 val token = task.result
                                                 Log.d("MyToken", token)
                                                 usr.token = token
-                                                FirebaseDatabase.getInstance().getReference("User")
-                                                    .child(Firebase.auth.uid.toString()).setValue(usr)
+                                                FirebaseDatabase.getInstance().getReference("User").child(Firebase.auth.uid.toString()).setValue(usr)
                                             })
 
                                         }

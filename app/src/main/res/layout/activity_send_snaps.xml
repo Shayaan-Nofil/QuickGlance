@@ -12,9 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#000000"
-        android:layout_marginBottom="80dp">
+        android:layout_marginBottom="80dp"/>
 
-    </ImageView>
+    <VideoView
+        android:id="@+id/video_viewer"
+        android:layout_marginTop="60dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:layout_marginBottom="80dp"/>
 
     <LinearLayout
         android:id="@+id/header_layout"
@@ -41,21 +47,21 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/chats_button"
+            android:id="@+id/memories_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginHorizontal="5dp"
             android:background="@drawable/story_back_button"/>
 
         <Button
-            android:id="@+id/Camerapage_button"
+            android:id="@+id/Stories_button"
             android:layout_width="160dp"
             android:layout_height="50dp"
             android:layout_marginHorizontal="5dp"
             android:background="@drawable/story_upload_button"/>
 
         <Button
-            android:id="@+id/Stories_button"
+            android:id="@+id/Sendto_button"
             android:layout_width="160dp"
             android:layout_height="50dp"
             android:layout_marginHorizontal="5dp"

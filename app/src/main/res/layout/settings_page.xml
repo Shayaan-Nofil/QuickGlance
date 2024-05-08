@@ -36,7 +36,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:layout_below="@+id/search_div"
         android:orientation="vertical">
@@ -579,7 +579,16 @@
 
         </LinearLayout>
 
-
+        <Button
+            android:id="@+id/sign_out_button"
+            android:layout_marginTop="20dp"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:text="Sign Out"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:background="@drawable/purple_rounded_square"
+            android:layout_gravity="center_horizontal"/>
 
 
     </LinearLayout>
