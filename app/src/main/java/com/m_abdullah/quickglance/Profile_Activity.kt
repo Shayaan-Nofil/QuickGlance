@@ -68,6 +68,7 @@ class Profile_Activity : AppCompatActivity() {
 
             val intent = Intent(this, accept_friends_activity::class.java)
             startActivity(intent)
+            finish()
         }
 
         findViewById<Button>(R.id.settings_button).setOnClickListener(){

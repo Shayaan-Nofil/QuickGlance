@@ -2,6 +2,7 @@ package com.m_abdullah.quickglance
 
 import Snap
 import User
+import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -47,6 +48,9 @@ class View_Snaps : AppCompatActivity() {
 
                     nextsnap.setOnClickListener(){
                         if (snaparray.isEmpty()){
+                            val intent = Intent(this@View_Snaps, chatspage_Activity::class.java)
+                            intent.putExtra("object", model)
+                            startActivity(intent)
                             finish()
                         }
                         else{
@@ -65,6 +69,9 @@ class View_Snaps : AppCompatActivity() {
         })
 
         findViewById<Button>(R.id.back_button).setOnClickListener{
+            val intent = Intent(this@View_Snaps, chatspage_Activity::class.java)
+            intent.putExtra("object", model)
+            startActivity(intent)
             finish()
         }
     }

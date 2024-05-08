@@ -130,9 +130,30 @@ class chatspage_Activity : AppCompatActivity() {
                                         val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
                                         vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
 
-                                        val intent = Intent(this@chatspage_Activity, View_Snaps::class.java)
-                                        intent.putExtra("object", model)
-                                        startActivity(intent)
+                                        FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Snaps").addValueEventListener(object:
+                                            ValueEventListener {
+                                            override fun onDataChange(snapshot: DataSnapshot) {
+                                                if (snapshot.exists()){
+                                                    snaparray.clear()
+                                                    for (data in snapshot.children){
+                                                        val myclass = data.getValue(Snap::class.java)
+                                                        if (myclass != null) {
+                                                            snaparray.add(myclass)
+                                                        }
+                                                    }
+                                                    if (snaparray.isNotEmpty()){
+                                                        val intent = Intent(this@chatspage_Activity, View_Snaps::class.java)
+                                                        intent.putExtra("object", model)
+                                                        startActivity(intent)
+                                                        finish()
+                                                    }
+                                                }
+                                            }
+                                            override fun onCancelled(error: DatabaseError) {
+                                                Log.w("TAG", "Failed to read value.", error.toException())
+                                            }
+                                        })
+
                                     }
                                 })
 
@@ -156,4 +177,5 @@ class chatspage_Activity : AppCompatActivity() {
         finish()
         overridePendingTransition(0, R.anim.slide_out_left)
     }
+
 }

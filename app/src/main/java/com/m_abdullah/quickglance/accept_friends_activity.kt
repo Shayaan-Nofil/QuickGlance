@@ -1,7 +1,9 @@
 package com.m_abdullah.quickglance
 
 import Chats
+import Friend
 import Requests
+import Streak
 import User
 import acceptuser_recycle_adapter
 import android.content.Intent
@@ -83,15 +85,28 @@ class accept_friends_activity : AppCompatActivity() {
                                                         val myclass = data.getValue(Requests::class.java)
                                                         if (myclass != null) {
                                                             if (myclass.senderid == model.id && myclass.recieverid == mAuth.uid.toString()){
-                                                                var chat = Chats()
+                                                                val chat = Chats()
+                                                                val streak = Streak()
+                                                                streak.user1 = model.id
+                                                                streak.user2 = mAuth.uid.toString()
+                                                                val friend = Friend()
+                                                                friend.friendid = model.id
+
                                                                 chat.id = FirebaseDatabase.getInstance().getReference("Chats").push().key.toString()
                                                                 FirebaseDatabase.getInstance().getReference("Chats").child(chat.id).setValue(chat)
 
                                                                 FirebaseDatabase.getInstance().getReference("Requests").child(data.key.toString()).removeValue()
-                                                                FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Friends").push().setValue(model.id)
+
+                                                                FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Friends").child(model.id).setValue(friend)
                                                                 FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Chats").child(chat.id).setValue(chat.id)
-                                                                FirebaseDatabase.getInstance().getReference("User").child(model.id).child("Friends").push().setValue(mAuth.uid.toString())
-                                                                FirebaseDatabase.getInstance().getReference("User").child(model.id).child("Chats").push().setValue(chat.id)
+                                                                FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Chats").child(chat.id).setValue(chat.id)
+
+                                                                friend.friendid = mAuth.uid.toString()
+                                                                FirebaseDatabase.getInstance().getReference("User").child(model.id).child("Friends").child(mAuth.uid.toString()).setValue(friend)
+                                                                FirebaseDatabase.getInstance().getReference("User").child(model.id).child("Chats").child(chat.id).setValue(chat.id)
+
+                                                                streak.id = FirebaseDatabase.getInstance().getReference("Streaks").push().key.toString()
+                                                                FirebaseDatabase.getInstance().getReference("Streaks").child(streak.id).setValue(streak)
                                                             }
                                                         }
                                                     }

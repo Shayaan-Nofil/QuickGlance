@@ -1,6 +1,8 @@
 package com.m_abdullah.quickglance
 
+import Friend
 import Snap
+import Streak
 import User
 import android.content.Intent
 import android.net.Uri
@@ -10,6 +12,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Firebase
@@ -31,7 +34,9 @@ import okhttp3.Response
 import org.json.JSONObject
 import senduser_recycle_adapter
 import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import kotlin.random.Random
 
@@ -88,9 +93,9 @@ class Select_Senders_Snap : AppCompatActivity() {
                 friendarray.clear()
                 if (snapshot.exists()){
                     for (data in snapshot.children){
-                        val myclass = data.getValue(String::class.java)
+                        val myclass = data.getValue(Friend::class.java)
                         if (myclass != null) {
-                           friendarray.add(myclass)
+                           friendarray.add(myclass.friendid)
                         }
                     }
                     FirebaseDatabase.getInstance().getReference("User").addValueEventListener(object:
@@ -146,6 +151,13 @@ class Select_Senders_Snap : AppCompatActivity() {
                             for (usr in sendarray){
                                 snap.id = FirebaseDatabase.getInstance().getReference("User").child(usr).child("Snaps").push().key.toString()
                                 FirebaseDatabase.getInstance().getReference("User").child(usr).child("Snaps").child(snap.id).setValue(snap)
+                                val friend = Friend()
+                                friend.lastpost = snap.time
+                                friend.friendid = usr
+                                FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Friends").child(usr).setValue(friend)
+
+                                updateStreaks(usr, snap)
+                                Toast.makeText(this, "Snap Sent", Toast.LENGTH_SHORT).show()
 
                                 FirebaseDatabase.getInstance().getReference("User").child(usr).get().addOnSuccessListener {
                                     val usr = it.getValue(User::class.java)
@@ -166,6 +178,37 @@ class Select_Senders_Snap : AppCompatActivity() {
             val intent = Intent(this, Camera_Activity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
+        }
+    }
+
+    fun updateStreaks(usr: String, snap: Snap){
+        FirebaseDatabase.getInstance().getReference("Streaks").get().addOnSuccessListener{
+            if (it.exists()){
+                for (data in it.children){
+                    val myclass = data.getValue(Streak::class.java)
+                    if (myclass != null) {
+
+                        if (myclass.user1 == mAuth.uid.toString() && myclass.user2 == usr || myclass.user1 == usr && myclass.user2 == mAuth.uid.toString()){
+                            if (myclass.days == 0){
+                                myclass.time = snap.time
+                                myclass.days = 1
+                            }
+                            val sdf = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.getDefault())
+                            val past = sdf.parse(myclass.time)
+                            val now = Date()
+
+                            val seconds = (now.time - past.time) / 1000
+                            val minutes = seconds / 60
+                            val hours = minutes / 60
+                            val days = hours / 24
+
+                            myclass.days = days.toInt()
+
+                            FirebaseDatabase.getInstance().getReference("Streaks").child(myclass.id).setValue(myclass)
+                        }
+                    }
+                }
+            }
         }
     }
     fun sendPushNotification(token: String, title: String, subtitle: String, body: String, data: Map<String, String> = emptyMap()) {

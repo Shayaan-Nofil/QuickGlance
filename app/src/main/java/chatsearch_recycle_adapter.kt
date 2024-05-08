@@ -20,6 +20,7 @@ import com.m_abdullah.quickglance.R
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 private lateinit var mAuth: FirebaseAuth
 private lateinit var database: DatabaseReference
@@ -35,6 +36,8 @@ class chatsearch_recycle_adapter(private val items: MutableList<Chats>, private 
         val notifpic: ImageView = itemView.findViewById(R.id.snap_notif_pic)
         val notiftext: TextView = itemView.findViewById(R.id.snap_notif)
         val timeago: TextView = itemView.findViewById(R.id.timeago)
+        val streaknum: TextView = itemView.findViewById(R.id.streak_num)
+        val staricon: ImageView = itemView.findViewById(R.id.star)
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.chatsearch_page_recycle, parent, false)
@@ -51,8 +54,18 @@ class chatsearch_recycle_adapter(private val items: MutableList<Chats>, private 
         holder.notifpic.visibility = View.GONE
         holder.notiftext.visibility = View.GONE
         holder.timeago.visibility = View.GONE
+        holder.staricon.visibility = View.GONE
+        holder.streaknum.text = "0"
 
-        setrecyclerdata(holder, chat)
+        FirebaseDatabase.getInstance().getReference("User").child("Snaps").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                setrecyclerdata(holder, chat)
+                updatestreaks(holder, chat)
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.w("TAG", "Failed to read value.", error.toException())
+            }
+        })
 
         holder.messagebutton.setOnClickListener(){
             onAcceptClickListener.onAcceptClick(position, chat)
@@ -77,13 +90,13 @@ class chatsearch_recycle_adapter(private val items: MutableList<Chats>, private 
 
     fun setrecyclerdata(holder: ViewHolder, chat: Chats) {
         mAuth = Firebase.auth
-        FirebaseDatabase.getInstance().getReference("User").addListenerForSingleValueEvent(object :
+        FirebaseDatabase.getInstance().getReference("User").addValueEventListener(object :
             ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (data in snapshot.children) {
                     val user = data.getValue(User::class.java)
                     if (user != null) {
-                        FirebaseDatabase.getInstance().getReference("User").child(user.id).child("Chats").addListenerForSingleValueEvent(object : ValueEventListener {
+                        FirebaseDatabase.getInstance().getReference("User").child(user.id).child("Chats").addValueEventListener(object : ValueEventListener {
                             override fun onDataChange(snap: DataSnapshot) {
                                 if (snap.exists()) {
                                     for (temp in snap.children) {
@@ -135,6 +148,111 @@ class chatsearch_recycle_adapter(private val items: MutableList<Chats>, private 
                                         onClickListener.onClick(user)
                                     }
 
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+                        })
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+    }
+
+    fun updatestreaks(holder: ViewHolder, chat: Chats){
+        mAuth = Firebase.auth
+
+        FirebaseDatabase.getInstance().getReference("User").addValueEventListener(object :
+            ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (data in snapshot.children) {
+                    val user = data.getValue(User::class.java)
+                    if (user != null) {
+                        FirebaseDatabase.getInstance().getReference("User").child(user.id).child("Chats").addValueEventListener(object : ValueEventListener {
+                            override fun onDataChange(snap: DataSnapshot) {
+                                if (snap.exists()) {
+                                    for (temp in snap.children) {
+                                        val chats = temp.getValue(String::class.java)
+                                        if (chats != null) {
+                                            if (chats == chat.id && user.id != mAuth.uid.toString()) {
+                                                holder.personname.text = user.name
+
+                                                Glide.with(holder.itemView)
+                                                    .load(user.profilepic)
+                                                    .into(holder.profleimg)
+
+                                                FirebaseDatabase.getInstance().getReference("Streaks").get().addOnSuccessListener{
+                                                    if (it.exists()){
+                                                        for (data in it.children){
+                                                            val myclass = data.getValue(Streak::class.java)
+                                                            if (myclass != null) {
+                                                                if (myclass.user1 == mAuth.uid.toString() && myclass.user2 == user.id || myclass.user1 == user.id && myclass.user2 == mAuth.uid.toString()){
+
+                                                                    val friend = Friend()
+                                                                    FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Friends").child(user.id).get().addOnSuccessListener {
+                                                                        if (it.exists()){
+                                                                            friend.friendid = it.child("id").value.toString()
+                                                                            friend.lastpost = it.child("lastpost").value.toString()
+
+                                                                            if (friend.lastpost != ""){
+                                                                                val sdf = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.getDefault())
+                                                                                val lastPostDate = sdf.parse(friend.lastpost)
+                                                                                val now = Date()
+
+                                                                                if (lastPostDate != null) {
+                                                                                    Log.w("TAG", "lastpost wasnt null")
+                                                                                    if ((now.time - lastPostDate.time) / 86400000 > 1){
+                                                                                        myclass.days = 0
+                                                                                        holder.streaknum.text = "0"
+                                                                                        holder.staricon.visibility = View.GONE
+
+                                                                                        FirebaseDatabase.getInstance().getReference("Streaks").child(myclass.id).setValue(myclass)
+                                                                                        return@addOnSuccessListener
+
+                                                                                    } else {
+                                                                                        val sdf = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.getDefault())
+                                                                                        val past = sdf.parse(myclass.time)
+                                                                                        val days = (now.time - past.time) / 86400000
+
+                                                                                        myclass.days = days.toInt()
+                                                                                        holder.streaknum.text = days.toString()
+                                                                                        if (myclass.days > 0){
+                                                                                            holder.staricon.visibility = View.VISIBLE
+                                                                                        }
+                                                                                        else{
+                                                                                            holder.staricon.visibility = View.GONE
+                                                                                        }
+
+                                                                                        FirebaseDatabase.getInstance().getReference("Streaks").child(myclass.id).setValue(myclass)
+                                                                                        return@addOnSuccessListener
+                                                                                    }
+                                                                                }
+                                                                            }
+
+
+                                                                        }
+                                                                    }
+                                                                }
+                                                                if (myclass.days != 0){
+                                                                    holder.staricon.visibility = View.VISIBLE
+                                                                }
+                                                                else{
+                                                                    holder.staricon.visibility = View.GONE
+                                                                }
+                                                                holder.streaknum.text = myclass.days.toString()
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
 

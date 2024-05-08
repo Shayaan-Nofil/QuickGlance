@@ -1,5 +1,6 @@
 package com.m_abdullah.quickglance
 
+import Friend
 import Requests
 import User
 import adduser_recycle_adapter
@@ -65,11 +66,10 @@ class Add_friends_activity : AppCompatActivity() {
         FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Friends").addValueEventListener(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()){
-                    var exists = false
                     for (data in snapshot.children){
-                        val myclass = data.getValue(String::class.java)
+                        val myclass = data.getValue(Friend::class.java)
                         if (myclass != null){
-                            friendsid.add(myclass)
+                            friendsid.add(myclass.friendid)
                         }
                     }
                     displayusers(friendsid, username)
