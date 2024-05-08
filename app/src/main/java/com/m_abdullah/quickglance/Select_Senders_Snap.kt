@@ -162,7 +162,7 @@ class Select_Senders_Snap : AppCompatActivity() {
                                 FirebaseDatabase.getInstance().getReference("User").child(usr).get().addOnSuccessListener {
                                     val usr = it.getValue(User::class.java)
                                     if (usr != null){
-                                        sendPushNotification(usr.token, username+ "Sent you a snap", "Description: ", "", mapOf("snapid" to snap.id))
+                                        sendPushNotification(usr.token, username+ " sent you a snap", "Description: ", "", mapOf("snapid" to snap.id))
                                     }
                                 }
                             }
