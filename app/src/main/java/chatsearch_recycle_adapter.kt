@@ -207,7 +207,7 @@ class chatsearch_recycle_adapter(private val items: MutableList<Chats>, private 
 
                                                                                 if (lastPostDate != null) {
                                                                                     Log.w("TAG", "lastpost wasnt null")
-                                                                                    if ((now.time - lastPostDate.time) / 86400000 > 1){
+                                                                                    if ((now.time - lastPostDate.time) / 86400000 >= 1){
                                                                                         myclass.days = 0
                                                                                         holder.streaknum.text = "0"
                                                                                         holder.staricon.visibility = View.GONE

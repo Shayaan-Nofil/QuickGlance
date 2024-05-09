@@ -1,6 +1,7 @@
 package com.m_abdullah.quickglance
 
 import Memories
+import Stories
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -24,6 +25,7 @@ import com.google.firebase.storage.FirebaseStorage
 import java.util.Calendar
 import kotlin.random.Random
 
+private lateinit var storage: FirebaseStorage
 class Send_snaps : AppCompatActivity() {
     private var imageUri: String = ""
     private var videoUri: String = ""
@@ -107,6 +109,33 @@ class Send_snaps : AppCompatActivity() {
             intent.putExtra("ContentUri", contentUri)
             intent.putExtra("TAG", tag)
             startActivity(intent)
+        }
+
+        findViewById<Button>(R.id.Stories_button).setOnClickListener{
+            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+
+            val mAuth = Firebase.auth
+            val story = Stories()
+            story.tag = tag
+            story.senderid = mAuth.uid.toString()
+            story.time = Calendar.getInstance().time.toString()
+
+            storage = FirebaseStorage.getInstance()
+            val storageref = storage.reference
+
+            storageref.child("Stories").child(mAuth.uid.toString() + Random.nextInt(0,100000).toString()).putFile(Uri.parse(contentUri)).addOnSuccessListener {
+                it.metadata!!.reference!!.downloadUrl.addOnSuccessListener {task ->
+                    story.content = task.toString()
+                    Log.w("TAG", "Upload Success")
+
+                    story.id = FirebaseDatabase.getInstance().getReference("Stories").push().key.toString()
+                    FirebaseDatabase.getInstance().getReference("Stories").child(story.id).setValue(story)
+                }
+            }.addOnFailureListener{
+                Log.w("TAG", "Upload failed")
+            }
+            finish()
         }
     }
 }

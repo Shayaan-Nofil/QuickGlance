@@ -17,13 +17,17 @@
         android:layout_marginTop="10dp">
 
         <Button
+            android:id="@+id/back_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/drop_down_arrow_icon_purple"
+            android:background="@drawable/back_purple"
+            android:scaleX="0.5"
+            android:scaleY="0.6"
             android:layout_marginLeft="5dp"/>
 
         <Button
+            android:id="@+id/seach_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -41,6 +45,7 @@
             android:gravity="center"/>
 
         <Button
+            android:id="@+id/addfriend_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -48,6 +53,7 @@
             android:layout_marginStart="15dp"/>
 
         <Button
+            android:id="@+id/settings_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -76,35 +82,36 @@
                 android:paddingTop="10dp"/>
         </LinearLayout>
 
-        <LinearLayout
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:orientation="horizontal">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:orientation="horizontal">
 
-            <FrameLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/stories_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/no_stories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="5dp"
-                android:paddingLeft="7dp">
+                android:text="No Stories to See"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:textColor="#D8D8D8"
+                android:layout_centerInParent="true"/>
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="75dp"
-                    android:layout_height="80dp"
-                    app:civ_border_color="#8497D0"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    app:civ_border_width="3dp"
-                    android:layout_marginBottom="20dp"
-                    android:src="@drawable/default_profile" />
+        </RelativeLayout>
 
-
-
-            </FrameLayout>
-
-            <!-- Repeat FrameLayout for other items -->
-
-        </LinearLayout>
 
     </LinearLayout>
 

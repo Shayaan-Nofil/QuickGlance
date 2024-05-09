@@ -94,9 +94,11 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/gallery_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:id="@+id/memories_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleY="0.6"
+            android:scaleX="0.6"
             android:layout_marginHorizontal="30dp"
             android:background="@drawable/gallery"/>
 
@@ -110,8 +112,10 @@
 
         <Button
             android:id="@+id/filter_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleY="0.6"
+            android:scaleX="0.6"
             android:layout_marginHorizontal="30dp"
             android:background="@drawable/filters"/>
 

@@ -53,7 +53,17 @@ class chatspage_Activity : AppCompatActivity() {
             }
         })
 
+        findViewById<Button>(R.id.Stories_button).setOnClickListener{
+            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+
+            val intent = Intent(this, Stories_Activity::class.java)
+            startActivity(intent)
+        }
         findViewById<Button>(R.id.Camerapage_button).setOnClickListener(){
+            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+
             finish()
             overridePendingTransition(0, R.anim.slide_out_left)
         }

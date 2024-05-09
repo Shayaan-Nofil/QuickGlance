@@ -194,6 +194,11 @@ class Camera_Activity : AppCompatActivity() {
             val intent = Intent(this, Stories_Activity::class.java)
             startActivity(intent)
         }
+        findViewById<Button>(R.id.memories_button).setOnClickListener{
+            val intent = Intent(this, Memories_Activity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_bottom,0)
+        }
     }
 
     private fun startCamera(cameraSelector: CameraSelector) {
