@@ -24,59 +24,50 @@ class View_Snaps : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_snaps)
 
-        val model = intent.getSerializableExtra("object") as User
-        val nextsnap = findViewById<View>(R.id.nextsnap_button)
+        val user = intent.getStringExtra("object").toString()
+        Log.w("TAG", user)
         val snaparray = mutableListOf<Snap>()
         val mAuth = Firebase.auth
 
-        FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Snaps").addValueEventListener(object:
-            ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()){
-                    snaparray.clear()
-                    for (data in snapshot.children){
-                        val myclass = data.getValue(Snap::class.java)
-                        if (myclass != null) {
-                            snaparray.add(myclass)
-                        }
-                    }
-                    displaysnap(snaparray.first())
-                    val temp = snaparray.first()
-                    FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Snaps").child(temp.id).removeValue()
-                    snaparray.removeFirst()
-
-
-                    nextsnap.setOnClickListener(){
-                        if (snaparray.isEmpty()){
-                            val intent = Intent(this@View_Snaps, chatspage_Activity::class.java)
-                            intent.putExtra("object", model)
-                            startActivity(intent)
-                            finish()
-                        }
-                        else{
-                            displaysnap(snaparray.first())
-                            val temp = snaparray.first()
-                            Log.w("TAG", temp.id)
-                            FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Snaps").child(temp.id).removeValue()
-                            snaparray.removeFirst()
-                        }
-                    }
+        FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Snaps").get().addOnSuccessListener {
+            for (snap in it.children){
+                Log.w("TAG", "Populating array")
+                val temp = snap.getValue(Snap::class.java)
+                if (temp!!.senderid == user){
+                    snaparray.add(temp)
                 }
             }
-            override fun onCancelled(error: DatabaseError) {
-                Log.w("TAG", "Failed to read value.", error.toException())
+            if (snaparray.isNotEmpty()){
+                Log.w("TAG", snaparray.size.toString())
+                displaysnap(snaparray.first())
+                val temp = snaparray.first()
+                FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Snaps").child(temp.id).removeValue()
+                snaparray.removeFirst()
             }
-        })
+            else{
+                finish()
+            }
+        }
+
+        findViewById<View>(R.id.nextsnap_button).setOnClickListener(){
+            if (snaparray.isEmpty()){
+                finish()
+            }
+            else{
+                displaysnap(snaparray.first())
+                val temp = snaparray.first()
+                Log.w("TAG", temp.id)
+                FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Snaps").child(temp.id).removeValue()
+                snaparray.removeFirst()
+            }
+        }
 
         findViewById<Button>(R.id.back_button).setOnClickListener{
-            val intent = Intent(this@View_Snaps, chatspage_Activity::class.java)
-            intent.putExtra("object", model)
-            startActivity(intent)
             finish()
         }
     }
 
-    fun displaysnap(snap: Snap){
+    private fun displaysnap(snap: Snap){
         val imageviewer = findViewById<ImageView>(R.id.image_displayer)
         imageviewer.visibility = View.VISIBLE
         val videoviewer = findViewById<VideoView>(R.id.video_displayer)

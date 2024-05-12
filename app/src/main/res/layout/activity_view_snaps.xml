@@ -11,25 +11,22 @@
         android:layout_height="match_parent"
         android:layout_below="@id/back_button"
         android:layout_centerInParent="true"
-        android:background="#2B2E70"/>
+        android:background="#121212"/>
 
     <ImageView
         android:id="@+id/image_displayer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/back_button"
         android:layout_centerInParent="true"
-        android:background="#2B2E70"/>
+        android:background="#121212"/>
 
     <View
         android:id="@+id/nextsnap_button"
-        android:clickable="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/back_button"
-        android:layout_centerInParent="true" />
-
-
+        android:layout_centerInParent="true"
+        android:clickable="true" />
 
     <Button
         android:id="@+id/back_button"

@@ -77,10 +77,8 @@ class Login_Activity : AppCompatActivity() {
             val secondActivityIntent = Intent(this, Camera_Activity::class.java)
             startActivity(secondActivityIntent)
             overridePendingTransition(R.anim.static_display_long,R.anim.fade_out_long)
-            finish()
-            return
+            //finish()
         }
-
 
         val loginbutton=findViewById<View>(R.id.login_button)
         loginbutton.setOnClickListener(View.OnClickListener {
@@ -171,7 +169,7 @@ class Login_Activity : AppCompatActivity() {
                     var secondActivityIntent = Intent(this, Camera_Activity::class.java)
                     startActivity(secondActivityIntent)
                     overridePendingTransition(R.anim.static_display_long,R.anim.fade_out_long)
-                    finish()
+                    //finish()
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("TAG", "signInWithEmail:failure", task.exception)

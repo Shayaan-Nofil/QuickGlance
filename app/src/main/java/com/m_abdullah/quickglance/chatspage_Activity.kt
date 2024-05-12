@@ -64,7 +64,7 @@ class chatspage_Activity : AppCompatActivity() {
                 val diffX = e2.x - e1!!.x
                 if (diffX < -100) {
                     finish()
-                    overridePendingTransition(R.anim.fade_in, R.anim.slide_out_left)
+                    overridePendingTransition(0, R.anim.slide_out_left)
                 }
                 return super.onFling(e1, e2, velocityX, velocityY)
             }
@@ -96,7 +96,7 @@ class chatspage_Activity : AppCompatActivity() {
 
             val intent = Intent(this, Profile_Activity::class.java)
             startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_top)
+            overridePendingTransition(R.anim.slide_in_top, R.anim.fade_out)
         }
         findViewById<Button>(R.id.addfriend_button).setOnClickListener(){
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
@@ -104,7 +104,7 @@ class chatspage_Activity : AppCompatActivity() {
 
             val intent = Intent(this, Add_friends_activity::class.java)
             startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_top)
+            overridePendingTransition(R.anim.slide_in_top, R.anim.fade_out)
         }
         findViewById<Button>(R.id.search_button).setOnClickListener(){
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
@@ -158,34 +158,28 @@ class chatspage_Activity : AppCompatActivity() {
                                 })
                                 adapter.setOnClickListener(object :
                                     chatsearch_recycle_adapter.OnClickListener {
-                                    override fun onClick(model: User) {
+                                    override fun onClick(model: String) {
+                                        Log.w("TAG", "In onclick listener")
+                                        Log.w("TAG", model)
                                         val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
                                         vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
 
-                                        FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Snaps").addValueEventListener(object:
-                                            ValueEventListener {
-                                            override fun onDataChange(snapshot: DataSnapshot) {
-                                                if (snapshot.exists()){
-                                                    snaparray.clear()
-                                                    for (data in snapshot.children){
-                                                        val myclass = data.getValue(Snap::class.java)
-                                                        if (myclass != null) {
-                                                            snaparray.add(myclass)
-                                                        }
-                                                    }
-                                                    if (snaparray.isNotEmpty()){
-                                                        val intent = Intent(this@chatspage_Activity, View_Snaps::class.java)
-                                                        intent.putExtra("object", model)
-                                                        startActivity(intent)
-                                                        finish()
+                                        FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Snaps").get().addOnSuccessListener {
+                                            if (it.exists()){
+                                                snaparray.clear()
+                                                for (data in it.children){
+                                                    val myclass = data.getValue(Snap::class.java)
+                                                    if (myclass != null && myclass.senderid == model) {
+                                                        snaparray.add(myclass)
                                                     }
                                                 }
+                                                if (snaparray.isNotEmpty()){
+                                                    val intent = Intent(this@chatspage_Activity, View_Snaps::class.java)
+                                                    intent.putExtra("object", model)
+                                                    startActivity(intent)
+                                                }
                                             }
-                                            override fun onCancelled(error: DatabaseError) {
-                                                Log.w("TAG", "Failed to read value.", error.toException())
-                                            }
-                                        })
-
+                                        }
                                     }
                                 })
 

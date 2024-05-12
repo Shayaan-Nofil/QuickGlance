@@ -476,6 +476,11 @@ class Camera_Activity : AppCompatActivity() {
         flashMode = ImageCapture.FLASH_MODE_OFF
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAffinity()
+    }
+
     companion object {
         private const val TAG = "camera_picture_mode"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"

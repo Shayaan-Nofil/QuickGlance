@@ -122,27 +122,50 @@ class Settings_Activity : AppCompatActivity() {
         })
 
         findViewById<Button>(R.id.back_arrow).setOnClickListener(){
-            val am = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-            val taskInfo = am.getRunningTasks(1)[0]
-            if (taskInfo.numActivities == 1) {
-                // The current activity is the only activity in the stack, start Camera activity
-                val intent = Intent(this, Camera_Activity::class.java)
-                startActivity(intent)
-            } else {
-                // There are more activities in the stack, finish the current activity
-                finish()
-            }
+            val intent = Intent(this, Camera_Activity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+            finish()
         }
 
         findViewById<Button>(R.id.sign_out_button).setOnClickListener(){
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
             vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
 
-            FirebaseAuth.getInstance().signOut()
-            val intent = Intent(this, Login_Activity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intent)
-            finish()
+
+            FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("guest").get().addOnSuccessListener {
+                if (it.exists()){
+                    if (it.value == true){
+                        FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).removeValue()
+                        mAuth.currentUser?.delete()?.addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Log.d("TAG", "User account deleted.")
+                            }
+                        }
+                    }
+                    FirebaseAuth.getInstance().signOut()
+                    val intent = Intent(this, Login_Activity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    startActivity(intent)
+                    finish()
+                }
+                else{
+                    FirebaseAuth.getInstance().signOut()
+                    val intent = Intent(this, Login_Activity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    startActivity(intent)
+                    finish()
+                }
+            }
+
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, Camera_Activity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+        finish()
     }
 }

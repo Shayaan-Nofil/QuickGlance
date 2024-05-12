@@ -8,13 +8,17 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.camera.view.PreviewView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ShayaanNofil.i210450.stories_recycle_adapter
@@ -118,6 +122,22 @@ class Stories_Activity : AppCompatActivity() {
                 TODO("Not yet implemented")
             }
         })
+
+        val rootLayout = findViewById<LinearLayout>(R.id.root_layout)
+        val swiperight = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                val diffX = e2.x - e1!!.x
+                if (diffX > 100) {
+                    finish()
+                    overridePendingTransition(R.anim.slide_in_left,R.anim.fade_out)
+                }
+                return super.onFling(e1, e2, velocityX, velocityY)
+            }
+        })
+        rootLayout.setOnTouchListener { _, event ->
+            swiperight.onTouchEvent(event)
+            true
+        }
 
         findViewById<Button>(R.id.back_button).setOnClickListener{
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator

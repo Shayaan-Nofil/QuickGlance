@@ -1,3 +1,4 @@
+import android.app.Activity
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +21,6 @@ import com.m_abdullah.quickglance.R
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 private lateinit var mAuth: FirebaseAuth
 private lateinit var database: DatabaseReference
@@ -56,16 +56,28 @@ class chatsearch_recycle_adapter(private val items: MutableList<Chats>, private 
         holder.timeago.visibility = View.GONE
         holder.staricon.visibility = View.GONE
         holder.streaknum.text = "0"
+        var useridarray = mutableListOf<String>()
 
-        FirebaseDatabase.getInstance().getReference("User").child("Snaps").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                setrecyclerdata(holder, chat)
-                updatestreaks(holder, chat)
+        setchatdata(holder, chat, useridarray)
+        setsnapdata(holder, chat)
+        updatestreaks(holder, chat)
+
+        holder.itemView.setOnClickListener {
+            for (user in useridarray){
+                FirebaseDatabase.getInstance().getReference("User").child(user).child("Chats").get().addOnSuccessListener {
+                    if (it.exists()){
+                        for (data in it.children){
+                            val chats = data.getValue(String::class.java)
+                            if (chats != null) {
+                                if (chats == chat.id) {
+                                    onClickListener.onClick(user)
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            override fun onCancelled(error: DatabaseError) {
-                Log.w("TAG", "Failed to read value.", error.toException())
-            }
-        })
+        }
 
         holder.messagebutton.setOnClickListener(){
             onAcceptClickListener.onAcceptClick(position, chat)
@@ -85,17 +97,17 @@ class chatsearch_recycle_adapter(private val items: MutableList<Chats>, private 
         fun onAcceptClick(position: Int, model: Chats)
     }
     interface OnClickListener {
-        fun onClick(model: User)
+        fun onClick(model: String)
     }
 
-    fun setrecyclerdata(holder: ViewHolder, chat: Chats) {
+    fun setchatdata(holder: ViewHolder, chat: Chats, useridarray: MutableList<String>) {
         mAuth = Firebase.auth
         FirebaseDatabase.getInstance().getReference("User").addValueEventListener(object :
             ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (data in snapshot.children) {
                     val user = data.getValue(User::class.java)
-                    if (user != null) {
+                    if (user != null && user.id != mAuth.uid.toString()){
                         FirebaseDatabase.getInstance().getReference("User").child(user.id).child("Chats").addValueEventListener(object : ValueEventListener {
                             override fun onDataChange(snap: DataSnapshot) {
                                 if (snap.exists()) {
@@ -104,50 +116,17 @@ class chatsearch_recycle_adapter(private val items: MutableList<Chats>, private 
                                         if (chats != null) {
                                             if (chats == chat.id && user.id != mAuth.uid.toString()) {
                                                 holder.personname.text = user.name
+                                                useridarray.add(user.id)
+                                                val context = holder.itemView.context
+                                                if (context is Activity && !context.isFinishing && !context.isDestroyed) {
+                                                    Glide.with(context)
+                                                        .load(user.profilepic)
+                                                        .into(holder.profleimg)
+                                                }
 
-                                                Glide.with(holder.itemView)
-                                                    .load(user.profilepic)
-                                                    .into(holder.profleimg)
                                             }
                                         }
                                     }
-                                    var set = false
-                                    for (temp in snaparray) {
-                                        if (temp.senderid == user.id && !set) {
-                                            if (temp.tag == "image"){
-                                                holder.notifpic.visibility = View.VISIBLE
-                                                holder.notiftext.visibility = View.VISIBLE
-
-                                                holder.notifpic.setImageResource(R.drawable.cyan_rectangle_chats)
-                                                holder.notiftext.text = "New Glance"
-                                                holder.notiftext.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.cyan_chats))
-                                                set = true
-                                            }
-                                            else if (temp.tag == "video"){
-                                                holder.notifpic.visibility = View.VISIBLE
-                                                holder.notiftext.visibility = View.VISIBLE
-
-                                                holder.notifpic.setImageResource(R.drawable.purple_rectangle_chats)
-                                                holder.notiftext.text = "New Glance"
-                                                holder.notiftext.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.purple_chats))
-                                                set = true
-                                            }
-                                            holder.timeago.visibility = View.VISIBLE
-                                            holder.timeago.text = getTimeAgo(temp.time)
-                                        }
-                                    }
-
-                                    var temparray = mutableListOf<Snap>()
-                                    for (temp in snaparray) {
-                                        if (temp.senderid == user.id) {
-                                            temparray.add(temp)
-                                        }
-                                    }
-
-                                    holder.itemView.setOnClickListener {
-                                        onClickListener.onClick(user)
-                                    }
-
                                 }
                             }
 
@@ -163,6 +142,79 @@ class chatsearch_recycle_adapter(private val items: MutableList<Chats>, private 
                 TODO("Not yet implemented")
             }
         })
+    }
+
+    fun setsnapdata(holder: ViewHolder, chat: Chats){
+        mAuth = Firebase.auth
+        var useridarray = mutableListOf<String>()
+        FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Friends").get().addOnSuccessListener {
+            if (it.exists()){
+                useridarray.clear()
+                for (data in it.children){
+                    val friend = data.getValue(Friend::class.java)
+                    if (friend != null && friend.friendid != mAuth.uid.toString()){
+                        useridarray.add(friend.friendid)
+                    }
+                }
+
+                for (user in useridarray) {
+                    FirebaseDatabase.getInstance().getReference("User").child(user).child("Chats").get().addOnSuccessListener {
+                        if (it.exists()) {
+                            for (data in it.children) {
+                                val chats = data.getValue(String::class.java)
+                                if (chats != null) {
+                                    if (chats == chat.id) {
+                                        var snaparray = mutableListOf<Snap>()
+                                        FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Snaps").addListenerForSingleValueEvent(object : ValueEventListener {
+                                            override fun onDataChange(snapshot: DataSnapshot) {
+                                                snaparray.clear()
+                                                for (data in snapshot.children) {
+                                                    val snap = data.getValue(Snap::class.java)
+                                                    if (snap != null) {
+                                                        snaparray.add(snap)
+                                                    }
+                                                }
+
+                                                var set = false
+                                                for (temp in snaparray) {
+                                                    if (temp.senderid == user && !set) {
+                                                        if (temp.tag == "image"){
+                                                            holder.notifpic.visibility = View.VISIBLE
+                                                            holder.notiftext.visibility = View.VISIBLE
+
+                                                            holder.notifpic.setImageResource(R.drawable.cyan_rectangle_chats)
+                                                            holder.notiftext.text = "New Glance"
+                                                            holder.notiftext.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.cyan_chats))
+                                                            set = true
+                                                        }
+                                                        else if (temp.tag == "video"){
+                                                            holder.notifpic.visibility = View.VISIBLE
+                                                            holder.notiftext.visibility = View.VISIBLE
+
+                                                            holder.notifpic.setImageResource(R.drawable.purple_rectangle_chats)
+                                                            holder.notiftext.text = "New Glance"
+                                                            holder.notiftext.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.purple_chats))
+                                                            set = true
+                                                        }
+                                                        holder.timeago.visibility = View.VISIBLE
+                                                        holder.timeago.text = getTimeAgo(temp.time)
+                                                    }
+                                                }
+
+                                            }
+                                            override fun onCancelled(error: DatabaseError) {
+                                                Log.w("TAG", "Failed to read value.", error.toException())
+                                            }
+                                        })
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun updatestreaks(holder: ViewHolder, chat: Chats){
@@ -181,12 +233,6 @@ class chatsearch_recycle_adapter(private val items: MutableList<Chats>, private 
                                         val chats = temp.getValue(String::class.java)
                                         if (chats != null) {
                                             if (chats == chat.id && user.id != mAuth.uid.toString()) {
-                                                holder.personname.text = user.name
-
-                                                Glide.with(holder.itemView)
-                                                    .load(user.profilepic)
-                                                    .into(holder.profleimg)
-
                                                 FirebaseDatabase.getInstance().getReference("Streaks").get().addOnSuccessListener{
                                                     if (it.exists()){
                                                         for (data in it.children){
@@ -206,7 +252,6 @@ class chatsearch_recycle_adapter(private val items: MutableList<Chats>, private 
                                                                                 val now = Date()
 
                                                                                 if (lastPostDate != null) {
-                                                                                    Log.w("TAG", "lastpost wasnt null")
                                                                                     if ((now.time - lastPostDate.time) / 86400000 >= 1){
                                                                                         myclass.days = 0
                                                                                         holder.streaknum.text = "0"
@@ -217,20 +262,22 @@ class chatsearch_recycle_adapter(private val items: MutableList<Chats>, private 
 
                                                                                     } else {
                                                                                         val sdf = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.getDefault())
-                                                                                        val past = sdf.parse(myclass.time)
-                                                                                        val days = (now.time - past.time) / 86400000
+                                                                                        if (myclass.time != ""){
+                                                                                            val past = sdf.parse(myclass.time)
+                                                                                            val days = (now.time - past.time) / 86400000
 
-                                                                                        myclass.days = days.toInt()
-                                                                                        holder.streaknum.text = days.toString()
-                                                                                        if (myclass.days > 0){
-                                                                                            holder.staricon.visibility = View.VISIBLE
-                                                                                        }
-                                                                                        else{
-                                                                                            holder.staricon.visibility = View.GONE
-                                                                                        }
+                                                                                            myclass.days = days.toInt()
+                                                                                            holder.streaknum.text = days.toString()
+                                                                                            if (myclass.days > 0){
+                                                                                                holder.staricon.visibility = View.VISIBLE
+                                                                                            }
+                                                                                            else{
+                                                                                                holder.staricon.visibility = View.GONE
+                                                                                            }
 
-                                                                                        FirebaseDatabase.getInstance().getReference("Streaks").child(myclass.id).setValue(myclass)
-                                                                                        return@addOnSuccessListener
+                                                                                            FirebaseDatabase.getInstance().getReference("Streaks").child(myclass.id).setValue(myclass)
+                                                                                            return@addOnSuccessListener
+                                                                                        }
                                                                                     }
                                                                                 }
                                                                             }

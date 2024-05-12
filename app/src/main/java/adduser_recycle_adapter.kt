@@ -17,7 +17,6 @@ import com.m_abdullah.quickglance.R
 
 class adduser_recycle_adapter(private val items: MutableList<User>): RecyclerView.Adapter<adduser_recycle_adapter.ViewHolder>() {
     private lateinit var onAcceptClickListener: OnAcceptClickListener
-    private lateinit var onItemClickListener: OnItemClickListener
 
     class ViewHolder (itemview: View): RecyclerView.ViewHolder(itemview){
         val personimg: ImageView = itemView.findViewById(R.id.person_img)
@@ -77,9 +76,6 @@ class adduser_recycle_adapter(private val items: MutableList<User>): RecyclerVie
             onAcceptClickListener.onAcceptClick(position, items[position])
         }
 
-        holder.itemView.setOnClickListener {
-            onItemClickListener.onItemClick(position, items[position])
-        }
 
         holder.personname.text = usr.name
         holder.personusername.text = usr.username
@@ -93,16 +89,10 @@ class adduser_recycle_adapter(private val items: MutableList<User>): RecyclerVie
         fun onAcceptClick(position: Int, model: User)
     }
 
-    interface OnItemClickListener {
-        fun onItemClick(position: Int, model: User)
-    }
 
     // Functions to bind the click listeners
     fun setOnAcceptClickListener(onAcceptClickListener: OnAcceptClickListener) {
         this.onAcceptClickListener = onAcceptClickListener
     }
 
-    fun setOnItemClickListener(onItemClickListener: OnItemClickListener) {
-        this.onItemClickListener = onItemClickListener
-    }
 }

@@ -12,6 +12,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.google.android.gms.tasks.OnCompleteListener
@@ -25,6 +26,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.messaging.FirebaseMessaging
+import java.util.Random
+import java.util.UUID
 
 private lateinit var mAuth: FirebaseAuth
 private lateinit var database: DatabaseReference
@@ -57,7 +60,7 @@ class Registration_Activity : AppCompatActivity() {
 
             if (email.text.isNotEmpty() && password.text.length >= 6 && username.text.isNotEmpty()){
                 Log.w("TAG", email.text.toString())
-                signup(email.text.toString(), password.text.toString())
+                signup(email.text.toString(), password.text.toString(), false)
             }else{
                 val text = "Please fill all the fields"
                 val duration = Toast.LENGTH_SHORT
@@ -65,9 +68,23 @@ class Registration_Activity : AppCompatActivity() {
                 toast.show()
             }
         })
+
+        findViewById<TextView>(R.id.guest_user).setOnClickListener{
+            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+
+            val random = Random()
+            val user = "guestUser" + UUID.randomUUID().toString().take(5)
+            username = findViewById<EditText>(R.id.Username)
+            username.setText(user)
+            val email = user + "@gmail.com.com"
+            val password = "pass" + random.nextInt(10000).toString()
+            Log.w("TAG", password)
+            signup(email, password, true)
+        }
     }
 
-    fun signup(email:String,pass:String){
+    fun signup(email:String,pass:String, guest: Boolean){
         mAuth.createUserWithEmailAndPassword(email, pass)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
@@ -75,6 +92,7 @@ class Registration_Activity : AppCompatActivity() {
                     var userId = mAuth.uid;
                     usr.username = username.text.toString()
                     usr.email = email
+                    usr.guest = guest
 
                     database = FirebaseDatabase.getInstance().getReference("User")
                     usr.id = mAuth.uid.toString()

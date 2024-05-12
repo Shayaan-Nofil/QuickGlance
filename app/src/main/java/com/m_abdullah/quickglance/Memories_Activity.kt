@@ -6,11 +6,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
@@ -79,6 +83,22 @@ class Memories_Activity : AppCompatActivity() {
                     findViewById<TextView>(R.id.no_memories).visibility = View.VISIBLE
                 }
             }
+        }
+
+        val rootLayout = findViewById<RelativeLayout>(R.id.root_layout)
+        val swipedown = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                val diffX = e2.y - e1!!.y
+                if (diffX > 300) {
+                    finish()
+                    overridePendingTransition(R.anim.slide_in_top, R.anim.fade_out)
+                }
+                return super.onFling(e1, e2, velocityX, velocityY)
+            }
+        })
+        rootLayout.setOnTouchListener { _, event ->
+            swipedown.onTouchEvent(event)
+            true
         }
 
         findViewById<Button>(R.id.back_button).setOnClickListener{

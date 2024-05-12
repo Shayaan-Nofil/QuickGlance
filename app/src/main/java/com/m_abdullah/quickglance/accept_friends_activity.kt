@@ -35,8 +35,6 @@ class accept_friends_activity : AppCompatActivity() {
         displayrequests()
     }
     private fun displayrequests(){
-        val recycle_topmentor: RecyclerView = findViewById(R.id.addusers_recycle)
-        recycle_topmentor.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         val requesarray: MutableList<Requests> = mutableListOf()
         val userarray: MutableList<User> = mutableListOf()
 
@@ -72,8 +70,11 @@ class accept_friends_activity : AppCompatActivity() {
                                     }
                                 }
 
+                                val recycle_topmentor: RecyclerView = findViewById(R.id.addusers_recycle)
+                                recycle_topmentor.layoutManager = LinearLayoutManager(this@accept_friends_activity, LinearLayoutManager.VERTICAL, false)
                                 val adapter = acceptuser_recycle_adapter(userarray)
                                 recycle_topmentor.adapter = adapter
+
                                 adapter.setOnAcceptClickListener(object :
                                     acceptuser_recycle_adapter.OnAcceptClickListener {
                                     override fun onAcceptClick(position: Int, model: User) {
@@ -156,9 +157,9 @@ class accept_friends_activity : AppCompatActivity() {
         })
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-        overridePendingTransition(0, R.anim.slide_out_top)
-    }
+//    override fun onBackPressed() {
+//        super.onBackPressed()
+//        finish()
+//        overridePendingTransition(0, R.anim.slide_out_top)
+//    }
 }

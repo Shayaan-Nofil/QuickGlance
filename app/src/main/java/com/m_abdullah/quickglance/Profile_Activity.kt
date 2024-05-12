@@ -1,6 +1,7 @@
 package com.m_abdullah.quickglance
 
 import User
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -8,8 +9,11 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
@@ -45,9 +49,11 @@ class Profile_Activity : AppCompatActivity() {
                     findViewById<TextView>(R.id.username).text = usr.username
                     findViewById<TextView>(R.id.name).text = usr.name
 
-                    Glide.with(this@Profile_Activity)
-                        .load(usr.profilepic)
-                        .into(profilepic)
+                    if (!(this@Profile_Activity).isFinishing and !(this@Profile_Activity).isDestroyed) {
+                        Glide.with(this@Profile_Activity)
+                            .load(usr.profilepic)
+                            .into(profilepic)
+                    }
                 }
             }
             override fun onCancelled(error: DatabaseError) {
@@ -60,6 +66,22 @@ class Profile_Activity : AppCompatActivity() {
             vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
 
             openGalleryForImage()
+        }
+
+        val rootLayout = findViewById<LinearLayout>(R.id.root_layout)
+        val swipeup = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                val diffX = e2.y - e1!!.y
+                if (diffX < -300) {
+                    finish()
+                    overridePendingTransition(R.anim.slide_in_bottom,R.anim.fade_out)
+                }
+                return super.onFling(e1, e2, velocityX, velocityY)
+            }
+        })
+        rootLayout.setOnTouchListener { _, event ->
+            swipeup.onTouchEvent(event)
+            true
         }
 
         findViewById<View>(R.id.acceptfriends_button).setOnClickListener(){
