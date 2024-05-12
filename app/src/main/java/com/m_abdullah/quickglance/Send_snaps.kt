@@ -97,6 +97,7 @@ class Send_snaps : AppCompatActivity() {
                         memorybutton.setBackgroundResource(R.drawable.tick_icon_white)
                         val id = FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Memories").push().key.toString()
                         FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Memories").child(id).setValue(memory)
+                        Toast.makeText(this, "Memory Saved", Toast.LENGTH_SHORT).show()
                     }
                 }.addOnFailureListener{
                     Log.w("TAG", "Upload failed")
