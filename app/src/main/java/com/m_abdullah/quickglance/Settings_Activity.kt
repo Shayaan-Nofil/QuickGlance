@@ -1,5 +1,6 @@
 package com.m_abdullah.quickglance
 
+import Streak
 import User
 import android.app.ActivityManager
 import android.app.DatePickerDialog
@@ -136,6 +137,34 @@ class Settings_Activity : AppCompatActivity() {
             FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("guest").get().addOnSuccessListener {
                 if (it.exists()){
                     if (it.value == true){
+                        FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Chats").get().addOnSuccessListener {
+                            if (it.exists()){
+                                for (i in it.children){
+                                    val temp = i.value.toString()
+                                    FirebaseDatabase.getInstance().getReference("Chats").child(temp).removeValue()
+                                }
+                            }
+                        }
+                        FirebaseDatabase.getInstance().getReference("Streaks").get().addOnSuccessListener {
+                            if (it.exists()){
+                                for (i in it.children){
+                                    Log.w("TAG", "Deleting Streaks")
+                                    val temp = i.getValue(Streak::class.java)
+                                    if (mAuth.uid.toString() == temp!!.user1 || mAuth.uid.toString() == temp.user2)
+                                        Log.w("TAG", temp.id)
+                                        FirebaseDatabase.getInstance().getReference("Streaks").child(temp.id).removeValue()
+                                }
+                            }
+                        }
+                        FirebaseDatabase.getInstance().getReference("Stories").get().addOnSuccessListener {
+                            if (it.exists()){
+                                for (i in it.children){
+                                    if (i.child("senderid").value.toString() == mAuth.uid.toString()){
+                                        FirebaseDatabase.getInstance().getReference("Stories").child(i.key.toString()).removeValue()
+                                    }
+                                }
+                            }
+                        }
                         FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).removeValue()
                         mAuth.currentUser?.delete()?.addOnCompleteListener { task ->
                             if (task.isSuccessful) {

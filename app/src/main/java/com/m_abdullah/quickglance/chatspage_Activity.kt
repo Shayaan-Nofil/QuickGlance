@@ -122,6 +122,7 @@ class chatspage_Activity : AppCompatActivity() {
         FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Chats").addValueEventListener(object:
             ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                chatidarray.clear()
                 if (snapshot.exists()){
                     for (data in snapshot.children){
                         val myclass = data.getValue(String::class.java)
@@ -137,11 +138,14 @@ class chatspage_Activity : AppCompatActivity() {
                                 for (data in snapshot.children){
                                     val myclass = data.getValue(Chats::class.java)
                                     if (myclass != null) {
+                                        Log.w("TAG", myclass.id)
                                         if (chatidarray.contains(myclass.id)){
+                                            Log.w("TAG", "Adding chat to chatarray")
                                             chatarray.add(myclass)
                                         }
                                     }
                                 }
+                                Log.w("TAG" , "Chatarray size: " + chatarray.size)
                                 val adapter = chatsearch_recycle_adapter(chatarray, snaparray)
                                 recycle_chat.adapter = adapter
 
