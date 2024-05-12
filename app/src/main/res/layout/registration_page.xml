@@ -142,9 +142,7 @@
                 android:textStyle="bold" />
         </RelativeLayout>
 
-
     </RelativeLayout>
-
     <TextView
         android:id="@+id/guest_user"
         android:layout_width="wrap_content"
@@ -152,7 +150,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp"
-        android:text="Sign up as a guest user"
+        android:text="Sign in as a Guest User"
         android:textColor="@color/white"
         android:textSize="15sp"
         android:textStyle="bold" />

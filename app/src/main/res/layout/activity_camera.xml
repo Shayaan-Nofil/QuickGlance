@@ -25,6 +25,7 @@
         android:textAlignment="center"
         android:textColor="#FF0000"
         android:textStyle="bold"
+        android:layout_marginTop="-20dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/header_layout"/>
 
@@ -40,23 +41,23 @@
 
         <Button
             android:id="@+id/profile_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_alignParentStart="true"
             android:background="@drawable/profile" />
 
         <Button
             android:id="@+id/search_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginStart="20dp"
             android:layout_toRightOf="@id/profile_button"
             android:background="@drawable/search" />
 
         <Button
             android:id="@+id/addfriend_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_toStartOf="@id/vertical_buttons"
             android:background="@drawable/add_friend" />
 
@@ -70,14 +71,14 @@
 
             <Button
                 android:id="@+id/flipcamera_button"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:background="@drawable/flip_camera" />
 
             <Button
                 android:id="@+id/flash_button"
-                android:layout_width="20dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/flash_off" />
@@ -133,22 +134,22 @@
 
         <Button
             android:id="@+id/chats_button"
-            android:layout_width="40dp"
-            android:layout_height="35dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginHorizontal="30dp"
             android:background="@drawable/chat"/>
 
         <Button
             android:id="@+id/Camerapage_button"
-            android:layout_width="40dp"
-            android:layout_height="35dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginHorizontal="20dp"
             android:background="@drawable/camera_highlighted"/>
 
         <Button
             android:id="@+id/Stories_button"
-            android:layout_width="40dp"
-            android:layout_height="35dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginHorizontal="30dp"
             android:background="@drawable/stories"/>
 

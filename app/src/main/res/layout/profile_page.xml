@@ -36,8 +36,8 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="15dp"
-            android:scaleY="1.2"
-            android:scaleX="1.2"
+            android:scaleY="0.9"
+            android:scaleX="0.9"
             android:background="@drawable/settings_icon_purple"
             android:layout_alignParentEnd="true"/>
     </RelativeLayout>
@@ -100,6 +100,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:scaleX="0.6"
+            android:scaleY="0.6"
             android:background="@drawable/camera_icon_grey"/>
 
         <TextView
@@ -117,6 +119,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:scaleX="0.6"
+            android:scaleY="0.6"
             android:background="@drawable/option_icon_grey"/>
 
     </LinearLayout>
@@ -147,6 +151,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
             android:background="@drawable/add_person_icon_grey"/>
 
         <TextView
@@ -164,47 +170,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:scaleX="0.8"
+            android:scaleY="0.8"
             android:background="@drawable/arrow_right_icon_grey"/>
 
     </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@drawable/white_box_rounded"
-        android:weightSum="6"
-        android:padding="5dp"
-        android:orientation="horizontal">
-
-        <View
-            android:layout_marginLeft="15dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/add_people_icon"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4"
-            android:textSize="20sp"
-            android:layout_marginLeft="10dp"
-            android:textColor="#061F4D"
-            android:text="My Friends"
-            android:gravity="center_vertical"/>
-
-        <View
-            android:layout_marginStart="15dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/arrow_right_icon_grey"/>
-
-    </LinearLayout>
-
-
-
 
 </LinearLayout>

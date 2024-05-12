@@ -24,7 +24,7 @@
                 android:id="@+id/back_button"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_width="30dp"
+                android:layout_width="25dp"
                 android:layout_height="15dp"
                 android:background="@drawable/down_arrow_purple"/>
 
@@ -41,7 +41,7 @@
                 android:id="@+id/addfriend_button"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_width="30dp"
+                android:layout_width="20dp"
                 android:layout_height="10dp"
                 android:background="@drawable/settings_purple"/>
         </RelativeLayout>
@@ -50,6 +50,7 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:layout_marginVertical="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp">
@@ -104,6 +105,7 @@
             android:src="@drawable/dock"
             android:layout_marginHorizontal="60dp"/>
 
+
         <LinearLayout
             android:id="@+id/nav_dock"
             android:layout_width="wrap_content"
@@ -115,22 +117,22 @@
 
             <Button
                 android:id="@+id/chats_button"
-                android:layout_width="40dp"
-                android:layout_height="35dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginHorizontal="30dp"
                 android:background="@drawable/chat_grey"/>
 
             <Button
                 android:id="@+id/Camerapage_button"
-                android:layout_width="40dp"
-                android:layout_height="35dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginHorizontal="20dp"
                 android:background="@drawable/camera"/>
 
             <Button
                 android:id="@+id/Stories_button"
-                android:layout_width="40dp"
-                android:layout_height="35dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginHorizontal="30dp"
                 android:background="@drawable/stories_grey"/>
 

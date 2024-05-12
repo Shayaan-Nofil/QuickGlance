@@ -8,14 +8,13 @@
         android:id="@+id/image_displayer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#0E0E0E"
-        />
+        android:layout_centerInParent="true"/>
 
     <Button
         android:id="@+id/back_button"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:background="@drawable/back_cross"
-        android:layout_margin="30dp"/>
+        android:layout_margin="20dp"/>
 
 </RelativeLayout>

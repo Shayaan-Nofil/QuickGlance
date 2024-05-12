@@ -24,8 +24,8 @@
                 android:id="@+id/back_button"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_width="30dp"
-                android:layout_height="35dp"
+                android:layout_width="25dp"
+                android:layout_height="30dp"
                 android:scaleY="0.6"
                 android:scaleX="0.6"
                 android:background="@drawable/back_purple"/>
@@ -48,7 +48,7 @@
         android:id="@+id/Body_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="13"
+        android:layout_weight="12"
         android:orientation="vertical"
         android:layout_marginTop="10dp">
 
@@ -63,7 +63,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1.5">
 
         <Button
             android:id="@+id/send_button"
