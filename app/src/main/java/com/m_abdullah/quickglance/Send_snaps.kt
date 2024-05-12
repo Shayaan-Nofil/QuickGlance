@@ -77,7 +77,7 @@ class Send_snaps : AppCompatActivity() {
         }
 
         val memorybutton = findViewById<Button>(R.id.memories_button)
-        memorybutton.setOnClickListener(){
+        memorybutton.setOnClickListener{
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
             vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
 

@@ -81,7 +81,7 @@ class main_splash_screen : AppCompatActivity() {
             // Open the new activity here
             val intent = Intent(this@main_splash_screen, Login_Activity::class.java)
             startActivity(intent)
-            overridePendingTransition(0,R.anim.static_display_long)
+            overridePendingTransition(R.anim.static_display_long, R.anim.zoom_in)
 
             finish()
         }

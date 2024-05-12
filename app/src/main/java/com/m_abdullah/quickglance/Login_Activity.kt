@@ -76,7 +76,7 @@ class Login_Activity : AppCompatActivity() {
             // User is already logged in, navigate to home page
             val secondActivityIntent = Intent(this, Camera_Activity::class.java)
             startActivity(secondActivityIntent)
-            overridePendingTransition(R.anim.static_display_long,R.anim.fade_out_long)
+            overridePendingTransition(R.anim.static_display_long,R.anim.zoom_in)
             //finish()
         }
 
@@ -137,7 +137,6 @@ class Login_Activity : AppCompatActivity() {
                             ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 if (snapshot.exists()) {
-                                    Log.w("TAG", "User is a user")
                                     var usr: User = snapshot.getValue(User::class.java)!!
                                     FirebaseMessaging.getInstance().token.addOnCompleteListener(
                                         OnCompleteListener { task ->

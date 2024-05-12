@@ -3,7 +3,8 @@
     android:id="@+id/outrim"
     android:layout_width="80dp"
     android:layout_height="80dp"
-    android:background="@drawable/purple_circle">
+    android:background="@drawable/purple_circle"
+    android:layout_margin="5dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/sender_img"
