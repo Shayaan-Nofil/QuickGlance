@@ -9,64 +9,52 @@
     tools:context=".Stories_Activity"
     android:background="@color/white">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:orientation="horizontal"
-        android:weightSum="8"
         android:layout_marginTop="10dp">
 
         <Button
             android:id="@+id/back_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:background="@drawable/back_purple"
-            android:scaleX="0.4"
-            android:scaleY="0.5"
-            android:layout_marginLeft="5dp"/>
-
-        <Button
-            android:id="@+id/seach_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:scaleY="0.7"
             android:scaleX="0.6"
-            android:scaleY="0.5"
-            android:background="@drawable/search_purple"
-            android:layout_marginLeft="15dp"/>
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"/>
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:layout_weight="4"
+            android:layout_centerHorizontal="true"
             android:textSize="25sp"
             android:textStyle="bold"
-            android:textColor="#061F4D"
+            android:textColor="#2b2e70"
             android:text="Stories"
             android:gravity="center"/>
 
         <Button
             android:id="@+id/addfriend_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:scaleX="0.7"
-            android:scaleY="0.7"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/settings_button"
             android:background="@drawable/add_person_filled_purple"
             android:layout_marginStart="15dp"/>
 
         <Button
             android:id="@+id/settings_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginTop="3dp"
-            android:scaleX="0.9"
-            android:scaleY="0.9"
+            android:layout_width="43dp"
+            android:layout_height="43dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@id/addfriend_button"
             android:background="@drawable/settings_icon_purple"
-            android:layout_marginStart="15dp"/>
-    </LinearLayout>
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="10dp"/>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/chat_tab"
@@ -82,11 +70,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Friends"
-                android:textColor="#061F4D"
+                android:textColor="#2b2e70"
                 android:textSize="20dp"
                 android:textStyle="bold"
-                android:paddingLeft="15dp"
-                android:paddingTop="10dp"/>
+                android:paddingLeft="15dp" />
         </LinearLayout>
 
 
@@ -97,7 +84,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="match_parent"
                 android:orientation="horizontal">
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -129,7 +116,7 @@
         android:text="  Quick Add"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="#061F4D"
+        android:textColor="#2b2e70"
         android:layout_marginTop="20dp"/>
 
     <LinearLayout
@@ -141,17 +128,20 @@
             android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:layout_height="60dp"
-            android:background="@drawable/white_box_rounded"
+            android:layout_height="70dp"
+            android:background="@drawable/stroke_box"
             android:weightSum="8"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:elevation="6dp">
 
             <View
                 android:layout_marginStart="15dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:background="@drawable/cyclone_icon"/>
+                android:layout_weight="2.3"
+                android:scaleX="0.7"
+                android:scaleY="0.7"
+                android:background="@drawable/add_person_filled_purple"/>
 
             <LinearLayout
                 android:layout_gravity="center_vertical"
@@ -166,8 +156,8 @@
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:layout_marginLeft="10dp"
-                    android:textColor="#061F4D"
-                    android:text="Friend Name"/>
+                    android:textColor="#2b2e70"
+                    android:text="John Doe"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -175,6 +165,7 @@
                     android:textSize="15sp"
                     android:layout_marginLeft="10dp"
                     android:text="Recently Joined"
+                    android:textColor="#2b2e70"
                     android:gravity="center_vertical"/>
 
 
@@ -199,37 +190,33 @@
         android:layout_weight="1.5"
         android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/dock"
-            android:layout_marginHorizontal="60dp"/>
         <LinearLayout
             android:id="@+id/nav_dock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="25dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="@drawable/stroke_box"
+            android:elevation="6dp"
+            android:paddingVertical="15dp">
 
             <Button
                 android:id="@+id/chats_button"
-                android:layout_width="30dp"
+                android:layout_width="35dp"
                 android:layout_height="30dp"
                 android:layout_marginHorizontal="30dp"
                 android:background="@drawable/chat_grey"/>
 
             <Button
                 android:id="@+id/Camerapage_button"
-                android:layout_width="30dp"
+                android:layout_width="35dp"
                 android:layout_height="30dp"
                 android:layout_marginHorizontal="20dp"
                 android:background="@drawable/camera"/>
 
             <Button
                 android:id="@+id/Stories_button"
-                android:layout_width="30dp"
+                android:layout_width="35dp"
                 android:layout_height="30dp"
                 android:layout_marginHorizontal="30dp"
                 android:background="@drawable/stories_highlighted"/>

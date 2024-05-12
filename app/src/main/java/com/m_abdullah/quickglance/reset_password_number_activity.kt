@@ -1,7 +1,7 @@
 package com.m_abdullah.quickglance
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 
 class reset_password_number_activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

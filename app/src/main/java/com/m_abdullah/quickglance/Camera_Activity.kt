@@ -19,7 +19,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.widget.Button
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
@@ -35,6 +34,11 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
+import com.bumptech.glide.Glide
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.google.firebase.database.FirebaseDatabase
+import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,7 +50,6 @@ class Camera_Activity : AppCompatActivity() {
     private lateinit var outputDirectory: File
     private var imageCapture: ImageCapture? = null
     private var usingFrontCamera = false
-    private var usingflash = false
     private var flashMode = ImageCapture.FLASH_MODE_OFF
     private var videoCapture: VideoCapture<Recorder>? = null
     private var recording: Recording? = null
@@ -212,14 +215,6 @@ class Camera_Activity : AppCompatActivity() {
             vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
 
             val intent = Intent(this, Add_friends_activity::class.java)
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_top, R.anim.fade_out)
-        }
-        findViewById<Button>(R.id.search_button).setOnClickListener(){
-            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
-            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
-
-            val intent = Intent(this, Search_Activity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_top, R.anim.fade_out)
         }

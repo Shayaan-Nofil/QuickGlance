@@ -3,26 +3,19 @@ package com.m_abdullah.quickglance
 import Friend
 import Stories
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import android.view.GestureDetector
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.WindowManager
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import androidx.camera.view.PreviewView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ShayaanNofil.i210450.stories_recycle_adapter
-import com.bumptech.glide.Glide
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -83,6 +76,9 @@ class Stories_Activity : AppCompatActivity() {
                                     adapter.setOnClickListener(object :
                                         stories_recycle_adapter.OnClickListener {
                                         override fun onClick(position: Int, model: Stories) {
+                                            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
+                                            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+
                                             val intent = Intent(this@Stories_Activity, View_Stories::class.java)
                                             intent.putExtra("object", model.senderid)
                                             startActivity(intent)
@@ -119,6 +115,33 @@ class Stories_Activity : AppCompatActivity() {
         rootLayout.setOnTouchListener { _, event ->
             swiperight.onTouchEvent(event)
             true
+        }
+
+        findViewById<Button>(R.id.settings_button).setOnClickListener{
+            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+
+            val intent = Intent(this, Settings_Activity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_top, R.anim.fade_out)
+        }
+        findViewById<Button>(R.id.Camerapage_button).setOnClickListener{
+            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+
+            val intent = Intent(this, Camera_Activity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_left,R.anim.fade_out)
+        }
+        findViewById<Button>(R.id.chats_button).setOnClickListener(){
+            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+
+            val intent = Intent(this, chatspage_Activity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_left,R.anim.fade_out)
         }
 
         findViewById<Button>(R.id.back_button).setOnClickListener{

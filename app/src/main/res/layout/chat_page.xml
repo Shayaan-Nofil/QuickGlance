@@ -43,15 +43,6 @@
                 android:layout_toEndOf="@id/back_arrow"
                 android:layout_marginStart="10dp"/>
 
-            <TextView
-                android:id="@+id/call_btn"
-                android:layout_width="20dp"
-                android:layout_height="25dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/phone_purple"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"/>
-
         </RelativeLayout>
 
 
@@ -66,7 +57,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="70dp"
         android:background="#F1F1F1"
         android:gravity="center">
 
@@ -86,8 +77,9 @@
             android:layout_weight="9"
             android:layout_marginHorizontal="5dp"
             android:background="@drawable/textbox_grey"
-            android:scaleY="0.7"
-            android:paddingStart="10dp"
+            android:scaleY="0.9"
+            android:layout_marginVertical="8dp"
+            android:paddingStart="15dp"
             android:hint="Send a chat"
             android:textSize="16sp" />
 
@@ -103,7 +95,7 @@
             android:id="@+id/send_button"
             android:layout_width="0dp"
             android:layout_height="30dp"
-            android:layout_weight="0.8"
+            android:layout_weight="1"
             android:layout_marginHorizontal="5dp"
             android:background="@drawable/send_purple"/>
 

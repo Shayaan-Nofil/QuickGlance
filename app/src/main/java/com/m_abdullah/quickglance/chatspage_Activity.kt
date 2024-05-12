@@ -106,13 +106,6 @@ class chatspage_Activity : AppCompatActivity() {
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_top, R.anim.fade_out)
         }
-        findViewById<Button>(R.id.search_button).setOnClickListener(){
-            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
-            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
-
-            val intent = Intent(this, Search_Activity::class.java)
-            startActivity(intent)
-        }
     }
     fun displaychats(snaparray: MutableList<Snap>){
         val recycle_chat: RecyclerView = findViewById(R.id.chatspage_recyclerview)

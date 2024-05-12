@@ -6,12 +6,12 @@ import Requests
 import Streak
 import User
 import acceptuser_recycle_adapter
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Firebase
@@ -19,18 +19,24 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import java.util.Locale
 
 private lateinit var mAuth: FirebaseAuth
-private lateinit var database: DatabaseReference
 class accept_friends_activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_accept_friends)
         mAuth = Firebase.auth
+
+        findViewById<Button>(R.id.back_button).setOnClickListener{
+            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+
+            finish()
+            overridePendingTransition(0, R.anim.slide_out_top)
+        }
+
 
         displayrequests()
     }
@@ -157,9 +163,9 @@ class accept_friends_activity : AppCompatActivity() {
         })
     }
 
-//    override fun onBackPressed() {
-//        super.onBackPressed()
-//        finish()
-//        overridePendingTransition(0, R.anim.slide_out_top)
-//    }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+        overridePendingTransition(0, R.anim.slide_out_top)
+    }
 }

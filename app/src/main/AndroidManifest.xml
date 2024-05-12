@@ -49,9 +49,6 @@
             android:name=".accept_friends_activity"
             android:exported="false" />
         <activity
-            android:name=".Search_Activity"
-            android:exported="false" />
-        <activity
             android:name=".main_splash_screen"
             android:exported="true">
             <intent-filter>

@@ -33,17 +33,9 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="Add Friends"
-                android:textColor="#061F4D"
+                android:textColor="#2b2e70"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/addfriend_button"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_width="20dp"
-                android:layout_height="10dp"
-                android:background="@drawable/settings_purple"/>
         </RelativeLayout>
 
 
@@ -91,56 +83,5 @@
             android:layout_height="match_parent"/>
 
     </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/Footer_layout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.5"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/dock"
-            android:layout_marginHorizontal="60dp"/>
-
-
-        <LinearLayout
-            android:id="@+id/nav_dock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="25dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/chats_button"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginHorizontal="30dp"
-                android:background="@drawable/chat_grey"/>
-
-            <Button
-                android:id="@+id/Camerapage_button"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginHorizontal="20dp"
-                android:background="@drawable/camera"/>
-
-            <Button
-                android:id="@+id/Stories_button"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginHorizontal="30dp"
-                android:background="@drawable/stories_grey"/>
-
-
-
-        </LinearLayout>
-
-
-    </RelativeLayout>
 
 </LinearLayout>

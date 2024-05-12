@@ -20,7 +20,8 @@ import com.google.firebase.database.ValueEventListener
 import com.m_abdullah.quickglance.R
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 private lateinit var mAuth: FirebaseAuth
 private lateinit var database: DatabaseReference
