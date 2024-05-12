@@ -148,11 +148,10 @@ class Settings_Activity : AppCompatActivity() {
                         FirebaseDatabase.getInstance().getReference("Streaks").get().addOnSuccessListener {
                             if (it.exists()){
                                 for (i in it.children){
-                                    Log.w("TAG", "Deleting Streaks")
                                     val temp = i.getValue(Streak::class.java)
-                                    if (mAuth.uid.toString() == temp!!.user1 || mAuth.uid.toString() == temp.user2)
-                                        Log.w("TAG", temp.id)
+                                    if (mAuth.uid.toString() == temp!!.user1 || mAuth.uid.toString() == temp.user2){
                                         FirebaseDatabase.getInstance().getReference("Streaks").child(temp.id).removeValue()
+                                    }
                                 }
                             }
                         }

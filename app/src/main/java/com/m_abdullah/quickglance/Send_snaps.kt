@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.MediaController
+import android.widget.Toast
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -22,6 +23,15 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import org.json.JSONObject
+import java.io.IOException
 import java.util.Calendar
 import kotlin.random.Random
 
@@ -131,6 +141,8 @@ class Send_snaps : AppCompatActivity() {
 
                     story.id = FirebaseDatabase.getInstance().getReference("Stories").push().key.toString()
                     FirebaseDatabase.getInstance().getReference("Stories").child(story.id).setValue(story)
+                    Toast.makeText(this, "Story Uploaded", Toast.LENGTH_SHORT).show()
+
                 }
             }.addOnFailureListener{
                 Log.w("TAG", "Upload failed")

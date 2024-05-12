@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide
 import com.m_abdullah.quickglance.R
 
 class senduser_recycle_adapter(private val items: MutableList<User>, private val sendarray: MutableList<String>): RecyclerView.Adapter<senduser_recycle_adapter.ViewHolder>() {
-    private lateinit var onItemClickListener: OnItemClickListener
 
     class ViewHolder (itemview: View): RecyclerView.ViewHolder(itemview){
         val personimg: ImageView = itemView.findViewById(R.id.person_img)
@@ -32,7 +31,6 @@ class senduser_recycle_adapter(private val items: MutableList<User>, private val
     }
     override fun onBindViewHolder(holder: senduser_recycle_adapter.ViewHolder, position: Int) {
         val usr = items[position]
-
 
         holder.itemView.setOnClickListener {
             if (sendarray.contains(usr.id)){
@@ -59,12 +57,4 @@ class senduser_recycle_adapter(private val items: MutableList<User>, private val
         return sendarray
     }
 
-
-    interface OnItemClickListener {
-        fun onItemClick(position: Int, model: User)
-    }
-
-    fun setOnItemClickListener(onItemClickListener: OnItemClickListener) {
-        this.onItemClickListener = onItemClickListener
-    }
 }

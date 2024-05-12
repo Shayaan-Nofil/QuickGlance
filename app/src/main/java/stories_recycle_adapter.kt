@@ -39,7 +39,6 @@ class stories_recycle_adapter(private val items: MutableList<Stories>): Recycler
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val post = items[position]
 
-
         FirebaseDatabase.getInstance().getReference("User").child(post.senderid).get().addOnSuccessListener {
             Glide.with(holder.itemView.context)
                 .load(it.child("profilepic").value.toString())

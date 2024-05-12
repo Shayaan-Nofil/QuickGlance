@@ -68,6 +68,7 @@ class Stories_Activity : AppCompatActivity() {
                                     if (myclass != null) {
                                         if (useridarray.contains(myclass.senderid)){
                                             storyarray.add(myclass)
+                                            useridarray.remove(myclass.senderid)
                                         }
                                     }
                                 }
@@ -78,29 +79,13 @@ class Stories_Activity : AppCompatActivity() {
                                     storyarray.reverse()
                                     val adapter = stories_recycle_adapter(storyarray)
                                     recycle_stories.adapter = adapter
+
                                     adapter.setOnClickListener(object :
                                         stories_recycle_adapter.OnClickListener {
                                         override fun onClick(position: Int, model: Stories) {
-                                            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
-                                            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
-
-                                            val dialogView = LayoutInflater.from(this@Stories_Activity).inflate(R.layout.image_fullscreen_viewer, null)
-                                            val builder = AlertDialog.Builder(this@Stories_Activity).setView(dialogView)
-                                            val alertDialog = builder.show()
-
-                                            val window = alertDialog.window
-
-                                            window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
-
-                                            val backbutton = dialogView.findViewById<Button>(R.id.back_button)
-                                            backbutton.setOnClickListener(View.OnClickListener {
-                                                alertDialog.dismiss()
-                                            })
-
-                                            val imageView = dialogView.findViewById<ImageView>(R.id.image_displayer)
-                                            Glide.with(this@Stories_Activity)
-                                                .load(model.content)
-                                                .into(imageView)
+                                            val intent = Intent(this@Stories_Activity, View_Stories::class.java)
+                                            intent.putExtra("object", model.senderid)
+                                            startActivity(intent)
                                         }
                                     })
                                 }
@@ -113,9 +98,6 @@ class Stories_Activity : AppCompatActivity() {
                             TODO("Not yet implemented")
                         }
                     })
-                }
-                else{
-
                 }
             }
             override fun onCancelled(error: DatabaseError) {
