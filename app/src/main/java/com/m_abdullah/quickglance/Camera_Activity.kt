@@ -239,6 +239,9 @@ class Camera_Activity : AppCompatActivity() {
             startActivity(intent)
         }
         findViewById<Button>(R.id.memories_button).setOnClickListener{
+            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+
             val intent = Intent(this, Memories_Activity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_bottom,R.anim.fade_out)

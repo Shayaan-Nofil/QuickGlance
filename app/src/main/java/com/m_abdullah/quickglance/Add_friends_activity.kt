@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -43,18 +45,23 @@ class Add_friends_activity : AppCompatActivity() {
 
         getfriends("")
 
-        val searchbutton=findViewById<View>(R.id.search_button)
-        searchbutton.setOnClickListener(View.OnClickListener {
-            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
-            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
-
-            val searchtext : EditText = findViewById(R.id.search_box)
-            getfriends(searchtext.text.toString())
+        val searchtext : EditText = findViewById(R.id.search_box)
+        searchtext.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                // This method is invoked after the text in the EditText has changed
+                getfriends(s.toString())
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // This method is invoked before the text in the EditText is about to change
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // This method is invoked when the text in the EditText is changing
+            }
         })
+
         findViewById<Button>(R.id.back_button).setOnClickListener(){
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
             vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
-
 
             finish()
             overridePendingTransition(0, R.anim.slide_out_top)

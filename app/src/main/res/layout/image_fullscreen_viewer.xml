@@ -6,10 +6,9 @@
 
     <ImageView
         android:id="@+id/image_displayer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/back_button"
-        android:layout_centerInParent="true"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#121212"/>
 
     <Button
         android:id="@+id/back_button"

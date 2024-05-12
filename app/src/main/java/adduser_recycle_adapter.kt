@@ -76,7 +76,6 @@ class adduser_recycle_adapter(private val items: MutableList<User>): RecyclerVie
             onAcceptClickListener.onAcceptClick(position, items[position])
         }
 
-
         holder.personname.text = usr.name
         holder.personusername.text = usr.username
 
