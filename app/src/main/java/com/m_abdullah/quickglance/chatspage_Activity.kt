@@ -9,7 +9,11 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import chatsearch_recycle_adapter
@@ -53,6 +57,25 @@ class chatspage_Activity : AppCompatActivity() {
             }
         })
 
+        val rootLayout = findViewById<RecyclerView>(R.id.chatspage_recyclerview)
+
+        val swipeleft = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                val diffX = e2.x - e1!!.x
+                if (diffX < -100) {
+                    finish()
+                    overridePendingTransition(R.anim.fade_in, R.anim.slide_out_left)
+                }
+                return super.onFling(e1, e2, velocityX, velocityY)
+            }
+        })
+
+        //controls swipe gestures
+        rootLayout.setOnTouchListener { _, event ->
+            swipeleft.onTouchEvent(event)
+            true
+        }
+
         findViewById<Button>(R.id.Stories_button).setOnClickListener{
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
             vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
@@ -75,7 +98,6 @@ class chatspage_Activity : AppCompatActivity() {
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_top)
         }
-
         findViewById<Button>(R.id.addfriend_button).setOnClickListener(){
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
             vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))

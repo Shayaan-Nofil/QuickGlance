@@ -15,6 +15,7 @@ import com.google.firebase.auth.auth
 import de.hdodenhof.circleimageview.CircleImageView
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.firebase.database.FirebaseDatabase
 import com.m_abdullah.quickglance.R
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -52,8 +53,11 @@ class chat_recycle_adapter(private val items: MutableList<Messages>): RecyclerVi
     }
     @SuppressLint("InflateParams")
     override fun onBindViewHolder(holder: chat_recycle_adapter.ViewHolder, position: Int) {
-
         val message = items[position]
+
+        FirebaseDatabase.getInstance().getReference("User").child(message.senderid).get().addOnSuccessListener {
+            holder.sendername!!.text = it.child("name").value.toString()
+        }
 
         if (message.tag == "image"){
             val params = holder.messagecontent.layoutParams

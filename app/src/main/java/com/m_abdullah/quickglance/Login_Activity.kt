@@ -76,7 +76,7 @@ class Login_Activity : AppCompatActivity() {
             // User is already logged in, navigate to home page
             val secondActivityIntent = Intent(this, Camera_Activity::class.java)
             startActivity(secondActivityIntent)
-            overridePendingTransition(0,R.anim.static_display_long)
+            overridePendingTransition(R.anim.static_display_long,R.anim.fade_out_long)
             finish()
             return
         }
@@ -170,7 +170,7 @@ class Login_Activity : AppCompatActivity() {
 
                     var secondActivityIntent = Intent(this, Camera_Activity::class.java)
                     startActivity(secondActivityIntent)
-                    overridePendingTransition(0,R.anim.static_display_long)
+                    overridePendingTransition(R.anim.static_display_long,R.anim.fade_out_long)
                     finish()
                 } else {
                     // If sign in fails, display a message to the user.

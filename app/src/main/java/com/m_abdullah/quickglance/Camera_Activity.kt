@@ -5,9 +5,6 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -17,12 +14,13 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.MediaStore
 import android.util.Log
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.widget.Button
+import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -38,7 +36,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import java.io.File
-import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
@@ -49,6 +46,7 @@ class Camera_Activity : AppCompatActivity() {
     private lateinit var outputDirectory: File
     private var imageCapture: ImageCapture? = null
     private var usingFrontCamera = false
+    private var usingflash = false
     private var flashMode = ImageCapture.FLASH_MODE_OFF
     private var videoCapture: VideoCapture<Recorder>? = null
     private var recording: Recording? = null
@@ -63,6 +61,9 @@ class Camera_Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
+
+        val sharedPref = getSharedPreferences("CameraPrefs", MODE_PRIVATE)
+        usingFrontCamera = sharedPref.getBoolean("usingFrontCamera", false)
 
         if (allPermissionsGranted()) {
             val sharedPref = getSharedPreferences("CameraPrefs", MODE_PRIVATE)
@@ -119,40 +120,82 @@ class Camera_Activity : AppCompatActivity() {
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
 
+        val rootLayout = findViewById<PreviewView>(R.id.camera_preview)
+        val doubletap = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onDoubleTap(e: MotionEvent): Boolean {
+                togglecamera()
+                return super.onDoubleTap(e)
+            }
+        })
+
+        val swiperight = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                val diffX = e2.x - e1!!.x
+                if (diffX > 100) {
+                    val intent = Intent(this@Camera_Activity, chatspage_Activity::class.java)
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_left,R.anim.fade_out)
+                }
+                return super.onFling(e1, e2, velocityX, velocityY)
+            }
+        })
+
+        val swipeleft = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                val diffX = e2.x - e1!!.x
+                if (diffX < -100) {
+                    val intent = Intent(this@Camera_Activity, Stories_Activity::class.java)
+                    startActivity(intent)
+                }
+                return super.onFling(e1, e2, velocityX, velocityY)
+            }
+        })
+
+        val swipeup = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                val diffX = e2.y - e1!!.y
+                if (diffX < -300) {
+                    val intent = Intent(this@Camera_Activity, Memories_Activity::class.java)
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_bottom,R.anim.fade_out)
+                }
+                return super.onFling(e1, e2, velocityX, velocityY)
+            }
+        })
+
+        val swipedown = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                val diffX = e2.y - e1!!.y
+                if (diffX > 300) {
+                    val intent = Intent(this@Camera_Activity, Profile_Activity::class.java)
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_top, R.anim.fade_out)
+                }
+                return super.onFling(e1, e2, velocityX, velocityY)
+            }
+        })
+        //controls swipe gestures
+        rootLayout.setOnTouchListener { _, event ->
+            doubletap.onTouchEvent(event)
+            swiperight.onTouchEvent(event)
+            swipeleft.onTouchEvent(event)
+            swipeup.onTouchEvent(event)
+            swipedown.onTouchEvent(event)
+            true
+        }
 
         findViewById<Button>(R.id.flipcamera_button).setOnClickListener(){
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
             vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
 
-            val sharedPref = getSharedPreferences("CameraPrefs", MODE_PRIVATE)
-
-            usingFrontCamera = !usingFrontCamera
-            val cameraSelector = if (usingFrontCamera) CameraSelector.DEFAULT_FRONT_CAMERA else CameraSelector.DEFAULT_BACK_CAMERA
-            startCamera(cameraSelector)
-
-            with (sharedPref.edit()) {
-                putBoolean("usingFrontCamera", usingFrontCamera)
-                apply()
-            }
+            togglecamera()
         }
-        val flashbutton = findViewById<Button>(R.id.flash_button)
-        flashbutton.setOnClickListener(){
+
+        findViewById<Button>(R.id.flash_button).setOnClickListener(){
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
             vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
 
-            val cameraControl = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture, videoCapture).cameraControl
-
-            if (flashMode == ImageCapture.FLASH_MODE_OFF && !usingFrontCamera) {
-                flashMode = ImageCapture.FLASH_MODE_ON
-                flashbutton.setBackgroundResource(R.drawable.flash)
-                cameraControl.enableTorch(true)
-            } else {
-                flashMode = ImageCapture.FLASH_MODE_OFF
-                flashbutton.setBackgroundResource(R.drawable.flash_off)
-                cameraControl.enableTorch(false)
-            }
-
-            imageCapture?.flashMode = flashMode
+            toggleflash()
         }
 
         findViewById<Button>(R.id.profile_button).setOnClickListener(){
@@ -161,7 +204,7 @@ class Camera_Activity : AppCompatActivity() {
 
             val intent = Intent(this, Profile_Activity::class.java)
             startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_top)
+            overridePendingTransition(R.anim.slide_in_top, R.anim.fade_out)
         }
 
         findViewById<Button>(R.id.addfriend_button).setOnClickListener(){
@@ -170,7 +213,7 @@ class Camera_Activity : AppCompatActivity() {
 
             val intent = Intent(this, Add_friends_activity::class.java)
             startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_top)
+            overridePendingTransition(R.anim.slide_in_top, R.anim.fade_out)
         }
         findViewById<Button>(R.id.search_button).setOnClickListener(){
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
@@ -178,6 +221,7 @@ class Camera_Activity : AppCompatActivity() {
 
             val intent = Intent(this, Search_Activity::class.java)
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_top, R.anim.fade_out)
         }
         findViewById<Button>(R.id.chats_button).setOnClickListener(){
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
@@ -185,7 +229,7 @@ class Camera_Activity : AppCompatActivity() {
 
             val intent = Intent(this, chatspage_Activity::class.java)
             startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_left,0)
+            overridePendingTransition(R.anim.slide_in_left,R.anim.fade_out)
         }
         findViewById<Button>(R.id.Stories_button).setOnClickListener(){
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
@@ -197,8 +241,42 @@ class Camera_Activity : AppCompatActivity() {
         findViewById<Button>(R.id.memories_button).setOnClickListener{
             val intent = Intent(this, Memories_Activity::class.java)
             startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_bottom,0)
+            overridePendingTransition(R.anim.slide_in_bottom,R.anim.fade_out)
         }
+    }
+    private fun togglecamera(){
+        Log.w("TAG", "switching camera")
+        usingFrontCamera = !usingFrontCamera
+        if (usingFrontCamera) {
+            findViewById<Button>(R.id.flash_button).setBackgroundResource(R.drawable.flash_off)
+            cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+        }
+        else {
+            cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+        }
+        startCamera(cameraSelector)
+
+        val sharedPref = getSharedPreferences("CameraPrefs", MODE_PRIVATE)
+        with (sharedPref.edit()) {
+            putBoolean("usingFrontCamera", usingFrontCamera)
+            apply()
+        }
+    }
+    private fun toggleflash(){
+        val cameraControl = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture, videoCapture).cameraControl
+        val flashbutton = findViewById<Button>(R.id.flash_button)
+
+        if (flashMode == ImageCapture.FLASH_MODE_OFF && !usingFrontCamera) {
+            flashMode = ImageCapture.FLASH_MODE_ON
+            flashbutton.setBackgroundResource(R.drawable.flash)
+            cameraControl.enableTorch(true)
+        } else {
+            flashMode = ImageCapture.FLASH_MODE_OFF
+            flashbutton.setBackgroundResource(R.drawable.flash_off)
+            cameraControl.enableTorch(false)
+        }
+
+        imageCapture?.flashMode = flashMode
     }
 
     private fun startCamera(cameraSelector: CameraSelector) {
@@ -234,7 +312,6 @@ class Camera_Activity : AppCompatActivity() {
                 cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture, videoCapture
                 )
-
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
@@ -267,22 +344,12 @@ class Camera_Activity : AppCompatActivity() {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(photoFile)
 
-                    // Flip the image if using the front camera
-//                    if (usingFrontCamera) {
-//                        val bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
-//                        val matrix = Matrix()
-//                        matrix.preScale(-1.0f, 1.0f)
-//                        val flippedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-//                        val out = FileOutputStream(photoFile)
-//                        flippedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-//                        out.close()
-//                    }
 
                     // Upload the image to Firestore
                     val intent = Intent(this@Camera_Activity, Send_snaps::class.java)
                     intent.putExtra("imageUri", savedUri.toString())
                     startActivity(intent)
-                    overridePendingTransition(R.anim.static_display, R.anim.slide_out_top)
+                    overridePendingTransition(R.anim.fade_in, 0)
                 }
             })
     }
@@ -350,6 +417,7 @@ class Camera_Activity : AppCompatActivity() {
                             Log.w("TAG", recordEvent.outputResults.outputUri.toString())
                             intent.putExtra("videoUri", recordEvent.outputResults.outputUri.toString())
                             startActivity(intent)
+                            overridePendingTransition(R.anim.fade_in, 0)
 
                             // Call uploadVideoToFirestore function here
                             //uploadVideoToFirestore(recordEvent.outputResults.outputUri)
@@ -404,6 +472,8 @@ class Camera_Activity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         startCamera(cameraSelector)
+        findViewById<Button>(R.id.flash_button).setBackgroundResource(R.drawable.flash_off)
+        flashMode = ImageCapture.FLASH_MODE_OFF
     }
 
     companion object {

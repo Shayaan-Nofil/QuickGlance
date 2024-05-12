@@ -44,6 +44,7 @@ class Stories_Activity : AppCompatActivity() {
             ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 useridarray.clear()
+                useridarray.add(mAuth.uid.toString())
                 if (snapshot.exists()){
                     for (data in snapshot.children){
                         val myclass = data.getValue(Friend::class.java)

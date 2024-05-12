@@ -129,7 +129,6 @@ class Select_Senders_Snap : AppCompatActivity() {
             val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
             vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
 
-            Thread(Runnable {
                 sendarray = adapter.getsendarray()
                 var snap = Snap()
                 snap.time = Calendar.getInstance().time.toString()
@@ -156,12 +155,12 @@ class Select_Senders_Snap : AppCompatActivity() {
                                 friend.friendid = usr
                                 FirebaseDatabase.getInstance().getReference("User").child(mAuth.uid.toString()).child("Friends").child(usr).setValue(friend)
 
-                                updateStreaks(usr, snap)
+                                //updateStreaks(usr, snap)
                                 Toast.makeText(this, "Snap Sent", Toast.LENGTH_SHORT).show()
 
                                 FirebaseDatabase.getInstance().getReference("User").child(usr).get().addOnSuccessListener {
                                     val usr = it.getValue(User::class.java)
-                                    if (usr != null){
+                                    if (usr != null && usr.id != mAuth.uid.toString()){
                                         sendPushNotification(usr.token, username+ " sent you a snap", "Description: ", "", mapOf("snapid" to snap.id))
                                     }
                                 }
@@ -172,45 +171,42 @@ class Select_Senders_Snap : AppCompatActivity() {
                     }
                 }
 
-
-            }).start()
-
             val intent = Intent(this, Camera_Activity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
         }
     }
 
-    fun updateStreaks(usr: String, snap: Snap){
-        FirebaseDatabase.getInstance().getReference("Streaks").get().addOnSuccessListener{
-            if (it.exists()){
-                for (data in it.children){
-                    val myclass = data.getValue(Streak::class.java)
-                    if (myclass != null) {
-
-                        if (myclass.user1 == mAuth.uid.toString() && myclass.user2 == usr || myclass.user1 == usr && myclass.user2 == mAuth.uid.toString()){
-                            if (myclass.days == 0){
-                                myclass.time = snap.time
-                                myclass.days = 1
-                            }
-                            val sdf = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.getDefault())
-                            val past = sdf.parse(myclass.time)
-                            val now = Date()
-
-                            val seconds = (now.time - past.time) / 1000
-                            val minutes = seconds / 60
-                            val hours = minutes / 60
-                            val days = hours / 24
-
-                            myclass.days = days.toInt()
-
-                            FirebaseDatabase.getInstance().getReference("Streaks").child(myclass.id).setValue(myclass)
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    fun updateStreaks(usr: String, snap: Snap){
+//        FirebaseDatabase.getInstance().getReference("Streaks").get().addOnSuccessListener{
+//            if (it.exists()){
+//                for (data in it.children){
+//                    val myclass = data.getValue(Streak::class.java)
+//                    if (myclass != null) {
+//
+//                        if (myclass.user1 == mAuth.uid.toString() && myclass.user2 == usr || myclass.user1 == usr && myclass.user2 == mAuth.uid.toString()){
+//                            if (myclass.days == 0){
+//                                myclass.time = snap.time
+//                                myclass.days = 1
+//                            }
+//                            val sdf = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.getDefault())
+//                            val past = sdf.parse(myclass.time)
+//                            val now = Date()
+//
+//                            val seconds = (now.time - past.time) / 1000
+//                            val minutes = seconds / 60
+//                            val hours = minutes / 60
+//                            val days = hours / 24
+//
+//                            myclass.days = days.toInt()
+//
+//                            FirebaseDatabase.getInstance().getReference("Streaks").child(myclass.id).setValue(myclass)
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
     fun sendPushNotification(token: String, title: String, subtitle: String, body: String, data: Map<String, String> = emptyMap()) {
         val url = "https://fcm.googleapis.com/fcm/send"
         val bodyJson = JSONObject()
